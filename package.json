@@ -1,0 +1,46 @@
+{
+    "name": "computervision",
+    "publisher": "Jack Millist",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.32.0"
+    },
+    "main": "extension.js",
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "command": "example.helloWorld",
+                "title": "Hello World"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "computer-vision",
+                    "title": "Computer Vision",
+                    "icon": "icon.png"
+                }
+            ]
+        },
+        "views": {
+            "computer-vision": [
+                {
+                    "id": "watch",
+                    "name": "Watch",
+                    "icon": "icon.png",
+                    "contextualTitle": "Watch Expressions"
+                },
+                {
+                    "id": "views",
+                    "name": "Views",
+                    "icon": "icon.png",
+                    "visibility": "collapsed",
+                    "contextualTitle": "Open views"
+                }
+            ]
+        }
+    }
+}
