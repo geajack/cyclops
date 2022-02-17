@@ -5,8 +5,6 @@ module.exports = {
     deactivate,
 };
 
-let watchTreeProvider;
-
 class WatchTreeProvider
 {
     getTreeItem(element)
@@ -31,7 +29,33 @@ class WatchTreeProvider
 
 function activate(context)
 {
-    watchTreeProvider = new WatchTreeProvider();
+    const watchTreeProvider = new WatchTreeProvider();
+
+    const debuggerTracker = {
+        onWillStartSession: function() {
+        },
+
+        onWillStopSession: function() {            
+        },
+
+        onWillReceiveMessage: async function() {
+        // if (msg.type === "request" && msg.command === "scopes") {
+        //   return debugVariablesTrackerService().onScopesRequest(msg);
+        // } else if (msg.type === "request" && msg.command === "variables") {
+        //   return debugVariablesTrackerService().onVariablesRequest(msg);
+        // } else if (msg.type === "request" && msg.command === "evaluate" && /^\s*$/.test(msg.arguments.expression)) {
+        //   // this is our call, in "update-frame-id" command.
+        //   return debugVariablesTrackerService().setFrameId(msg.arguments.frameId);
+        // }
+        },
+
+        onDidSendMessage: async function(message) {
+            if (message.type === "event" && message.event === "stopped" && message.body.threadId !== undefined)
+            {
+                console.log("Debugger stopped");
+            }
+        }
+    };
 
     context.subscriptions.push(
         vscode.window.registerTreeDataProvider(
@@ -39,6 +63,8 @@ function activate(context)
             watchTreeProvider
         )
     );
+
+    vscode.debug.registerDebugAdapterTrackerFactory("python", { createDebugAdapterTracker: () => debuggerTracker });
 }
 
 function deactivate() { }
