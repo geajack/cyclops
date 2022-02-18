@@ -72,6 +72,11 @@ function activate(context)
             {
                 provideCodeActions: function()
                 {
+                    if (vscode.debug.activeDebugSession === undefined)
+                    {
+                        return [];
+                    }
+
                     return [
                         {
                             command: "computervision-command",
