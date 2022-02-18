@@ -65,6 +65,31 @@ function activate(context)
     );
 
     vscode.debug.registerDebugAdapterTrackerFactory("python", { createDebugAdapterTracker: () => debuggerTracker });
+
+    context.subscriptions.push(
+		vscode.languages.registerCodeActionsProvider(
+            "python",
+            {
+                provideCodeActions: function()
+                {
+                    return [
+                        {
+                            command: "computervision-command",
+                            title: "Hello, world!",
+                            arguments: [],
+                        }
+                    ];
+                }
+            },
+            {
+			    providedCodeActionKinds: [vscode.CodeActionKind.Empty]
+		    }
+        )
+	);
+
+    context.subscriptions.push(
+		vscode.commands.registerCommand("computervision-command", () => vscode.env.openExternal(vscode.Uri.parse("https://unicode.org/emoji/charts-12.0/full-emoji-list.html")))
+	);
 }
 
 function deactivate() { }
