@@ -29,34 +29,12 @@ class WatchTreeProvider
     }
 }
 
+const VIEW_IMAGE_COMMAND_ID = "viewImage";
+
 function activate(context)
 {
 
     const debuggerTracker = {
-        onWillStartSession: function ()
-        {
-        },
-
-        onWillStopSession: function ()
-        {
-        },
-
-        onWillReceiveMessage: async function (message)
-        {
-            // if (msg.type === "request" && msg.command === "scopes") {
-            //   return debugVariablesTrackerService().onScopesRequest(msg);
-            // } else if (msg.type === "request" && msg.command === "variables") {
-            //   return debugVariablesTrackerService().onVariablesRequest(msg);
-            // } else if (msg.type === "request" && msg.command === "evaluate" && /^\s*$/.test(msg.arguments.expression)) {
-            //   // this is our call, in "update-frame-id" command.
-            //   return debugVariablesTrackerService().setFrameId(msg.arguments.frameId);
-            // }
-            // if (message.type === "request" && message.command === "evaluate")
-            // {
-            //     console.log(message);
-            // }
-        },
-
         onDidSendMessage: async function (message)
         {
             if (message.type === "event" && message.event === "stopped" && message.body.threadId !== undefined)
@@ -79,7 +57,7 @@ function activate(context)
                 )
 
                 let panel = vscode.window.createWebviewPanel(
-                    "examplePanel",
+                    "panel",
                     "Image View",
                     vscode.ViewColumn.Beside
                 );
@@ -95,13 +73,13 @@ function activate(context)
         }
     };
 
-    const watchTreeProvider = new WatchTreeProvider();
-    context.subscriptions.push(
-        vscode.window.registerTreeDataProvider(
-            "watch",
-            watchTreeProvider
-        )
-    );
+    // const watchTreeProvider = new WatchTreeProvider();
+    // context.subscriptions.push(
+    //     vscode.window.registerTreeDataProvider(
+    //         "watch",
+    //         watchTreeProvider
+    //     )
+    // );
 
     vscode.debug.registerDebugAdapterTrackerFactory("python", { createDebugAdapterTracker: () => debuggerTracker });
 
@@ -109,7 +87,7 @@ function activate(context)
         vscode.languages.registerCodeActionsProvider(
             "python",
             {
-                provideCodeActions: function ()
+                provideCodeActions: function()
                 {
                     if (vscode.debug.activeDebugSession === undefined)
                     {
@@ -118,7 +96,7 @@ function activate(context)
 
                     return [
                         {
-                            command: "computervision.helloWorld",
+                            command: VIEW_IMAGE_COMMAND_ID,
                             title: "View image",
                             arguments: ["image"],
                         }
@@ -132,7 +110,7 @@ function activate(context)
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand("computervision.helloWorld",
+        vscode.commands.registerCommand(VIEW_IMAGE_COMMAND_ID,
             async function (editor, _, pythonCode)
             {
 

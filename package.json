@@ -10,13 +10,6 @@
         "onStartupFinished"
     ],
     "contributes": {
-        "commands": [
-            {
-                "command": "computervision.helloWorld",
-                "title": "Hello World",
-                "enablement": "inDebugMode"
-            }
-        ],
         "viewsContainers": {
             "activitybar": [
                 {
