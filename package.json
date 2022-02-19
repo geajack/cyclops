@@ -12,8 +12,9 @@
     "contributes": {
         "commands": [
             {
-                "command": "example.helloWorld",
-                "title": "Hello World"
+                "command": "computervision.helloWorld",
+                "title": "Hello World",
+                "enablement": "inDebugMode"
             }
         ],
         "viewsContainers": {

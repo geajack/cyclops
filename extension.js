@@ -38,7 +38,7 @@ function activate(context)
         onWillStopSession: function() {            
         },
 
-        onWillReceiveMessage: async function() {
+        onWillReceiveMessage: async function(message) {
         // if (msg.type === "request" && msg.command === "scopes") {
         //   return debugVariablesTrackerService().onScopesRequest(msg);
         // } else if (msg.type === "request" && msg.command === "variables") {
@@ -47,6 +47,10 @@ function activate(context)
         //   // this is our call, in "update-frame-id" command.
         //   return debugVariablesTrackerService().setFrameId(msg.arguments.frameId);
         // }
+            // if (message.type === "request" && message.command === "evaluate")
+            // {
+            //     console.log(message);
+            // }
         },
 
         onDidSendMessage: async function(message) {
@@ -79,9 +83,9 @@ function activate(context)
 
                     return [
                         {
-                            command: "computervision-command",
-                            title: "Hello, world!",
-                            arguments: [],
+                            command: "computervision.helloWorld",
+                            title: "View image",
+                            arguments: ["image"],
                         }
                     ];
                 }
@@ -93,7 +97,26 @@ function activate(context)
 	);
 
     context.subscriptions.push(
-		vscode.commands.registerCommand("computervision-command", () => vscode.env.openExternal(vscode.Uri.parse("https://unicode.org/emoji/charts-12.0/full-emoji-list.html")))
+		vscode.commands.registerCommand("computervision.helloWorld", 
+            async function(editor, _, pythonCode)
+            {
+                const session = vscode.debug.activeDebugSession;
+                if (session === undefined)
+                {
+                    return;
+                }
+                let response;
+                response = await session.customRequest('stackTrace', { threadId: 1 })
+                let frameId = response.stackFrames[0].id;
+                response = await session.customRequest("evaluate",
+                    {
+                        expression: "\"Hello\"",
+                        frameId: frameId
+                    }
+                )
+                console.log(response);
+            }
+        )
 	);
 }
 
