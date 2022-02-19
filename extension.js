@@ -66,10 +66,12 @@ function activate(context)
                 let response;
                 response = await session.customRequest("stackTrace", { threadId: 1 })
                 let frameId = response.stackFrames[0].id;
+
+
                 response = await session.customRequest("evaluate",
                     {
                         expression: `
-                        cv2.imwrite("output.png", variable)
+                        cv2.imwrite("${context.extensionPath}/output.png", variable)
                         `,
                         frameId: frameId
                     }
@@ -86,7 +88,7 @@ function activate(context)
                 );                
                 let pathUri = pathToHtml.with({scheme: "vscode-resource"});   
                 let html = fs.readFileSync(pathUri.fsPath, "utf8");
-                html = html.replace("{{extensionPath}}", panel.webview.asWebviewUri(context.extensionUri));
+                html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(context.extensionUri));
                 panel.webview.html = html;
             }
         }
