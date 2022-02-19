@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const impl = require("./implementation.js")
 const constants = require("./constants.js")
+const path = require("path");
 const fs = require("fs")
 
 module.exports = {
@@ -81,6 +82,13 @@ function activate(context)
 
     let storagePath = context.storageUri.fsPath;
     fs.mkdirSync(storagePath, { recursive: true });
+
+    for (let fileName of fs.readdirSync(storagePath))
+    {
+        fs.rmSync(
+            path.join(storagePath, fileName)
+        );
+    }
 
     const imageViewer = new impl.ImageViewer(context);
 
