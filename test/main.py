@@ -1,4 +1,4 @@
-import numpy as np
+import cv2
 
-variable = np.eye(800)
+variable = cv2.imread("../icon.png")
 pass

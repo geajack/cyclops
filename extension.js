@@ -66,19 +66,12 @@ function activate(context)
                 let frameId = response.stackFrames[0].id;
                 response = await session.customRequest("evaluate",
                     {
-                        expression: "variable",
+                        expression: `
+                        cv2.imwrite("output.png", variable)
+                        `,
                         frameId: frameId
                     }
                 )
-                console.log(response);
-
-                response = await session.customRequest(
-                    "variables",
-                    {
-                        variablesReference: response.variablesReference,
-                        filter: "indexed"
-                    }
-                );
                 console.log(response);
             }
         }
