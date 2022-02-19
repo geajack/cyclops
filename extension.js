@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const impl = require("./implementation.js")
 const constants = require("./constants.js")
+const fs = require("fs")
 
 module.exports = {
     activate,
@@ -77,6 +78,9 @@ function activate(context)
     //         watchTreeProvider
     //     )
     // );
+
+    let storagePath = context.storageUri.fsPath;
+    fs.mkdirSync(storagePath, { recursive: true });
 
     const imageViewer = new impl.ImageViewer(context);
 

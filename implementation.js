@@ -33,18 +33,21 @@ class ImageViewer
 
         response = await session.customRequest("evaluate",
             {
-                expression: `cv2.imwrite("${this.context.extensionPath}/${outputFileName}", (${pythonCode}))`,
+                expression: `cv2.imwrite("${this.context.storageUri.fsPath}/${outputFileName}", (${pythonCode}))`,
                 frameId: frameId
             }
         )
 
-        let fileWasCreated = fs.existsSync(path.join(this.context.extensionPath, outputFileName));
+        let fileWasCreated = fs.existsSync(path.join(this.context.storageUri.fsPath, outputFileName));
         if (fileWasCreated)
         {
             let panel = vscode.window.createWebviewPanel(
                 "panel",
                 "Image View",
-                vscode.ViewColumn.Beside
+                vscode.ViewColumn.Beside,
+                {
+                    localResourceRoots: [this.context.storageUri]
+                }
             );
 
             let pathToHtml = vscode.Uri.file(
@@ -53,6 +56,7 @@ class ImageViewer
             let pathUri = pathToHtml.with({ scheme: "vscode-resource" });
             let html = fs.readFileSync(pathUri.fsPath, "utf8");
             html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(this.context.extensionUri));
+            html = html.replaceAll("{{storagePath}}", panel.webview.asWebviewUri(this.context.storageUri));
             html = html.replaceAll("{{imageFileName}}", outputFileName);
             panel.webview.html = html;
         }
