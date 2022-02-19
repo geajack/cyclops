@@ -77,12 +77,12 @@ function activate(context)
 
                 let panel = vscode.window.createWebviewPanel(
                     "examplePanel",
-                    "This is the title",
+                    "Image View",
                     vscode.ViewColumn.Beside
                 );
 
                 let pathToHtml = vscode.Uri.file(
-                    path.join(context.extensionPath, "index.html")
+                    path.join(context.extensionPath, "webview", "index.html")
                 );                
                 let pathUri = pathToHtml.with({scheme: "vscode-resource"});   
                 let html = fs.readFileSync(pathUri.fsPath, "utf8");
