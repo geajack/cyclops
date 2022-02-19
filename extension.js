@@ -31,31 +31,34 @@ class WatchTreeProvider
 
 function activate(context)
 {
-    const watchTreeProvider = new WatchTreeProvider();
 
     const debuggerTracker = {
-        onWillStartSession: function() {
+        onWillStartSession: function ()
+        {
         },
 
-        onWillStopSession: function() {            
+        onWillStopSession: function ()
+        {
         },
 
-        onWillReceiveMessage: async function(message) {
-        // if (msg.type === "request" && msg.command === "scopes") {
-        //   return debugVariablesTrackerService().onScopesRequest(msg);
-        // } else if (msg.type === "request" && msg.command === "variables") {
-        //   return debugVariablesTrackerService().onVariablesRequest(msg);
-        // } else if (msg.type === "request" && msg.command === "evaluate" && /^\s*$/.test(msg.arguments.expression)) {
-        //   // this is our call, in "update-frame-id" command.
-        //   return debugVariablesTrackerService().setFrameId(msg.arguments.frameId);
-        // }
+        onWillReceiveMessage: async function (message)
+        {
+            // if (msg.type === "request" && msg.command === "scopes") {
+            //   return debugVariablesTrackerService().onScopesRequest(msg);
+            // } else if (msg.type === "request" && msg.command === "variables") {
+            //   return debugVariablesTrackerService().onVariablesRequest(msg);
+            // } else if (msg.type === "request" && msg.command === "evaluate" && /^\s*$/.test(msg.arguments.expression)) {
+            //   // this is our call, in "update-frame-id" command.
+            //   return debugVariablesTrackerService().setFrameId(msg.arguments.frameId);
+            // }
             // if (message.type === "request" && message.command === "evaluate")
             // {
             //     console.log(message);
             // }
         },
 
-        onDidSendMessage: async function(message) {
+        onDidSendMessage: async function (message)
+        {
             if (message.type === "event" && message.event === "stopped" && message.body.threadId !== undefined)
             {
                 const session = vscode.debug.activeDebugSession;
@@ -70,9 +73,7 @@ function activate(context)
 
                 response = await session.customRequest("evaluate",
                     {
-                        expression: `
-                        cv2.imwrite("${context.extensionPath}/output.png", variable)
-                        `,
+                        expression: `cv2.imwrite("${context.extensionPath}/output.png", variable)`,
                         frameId: frameId
                     }
                 )
@@ -85,8 +86,8 @@ function activate(context)
 
                 let pathToHtml = vscode.Uri.file(
                     path.join(context.extensionPath, "webview", "index.html")
-                );                
-                let pathUri = pathToHtml.with({scheme: "vscode-resource"});   
+                );
+                let pathUri = pathToHtml.with({ scheme: "vscode-resource" });
                 let html = fs.readFileSync(pathUri.fsPath, "utf8");
                 html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(context.extensionUri));
                 panel.webview.html = html;
@@ -94,6 +95,7 @@ function activate(context)
         }
     };
 
+    const watchTreeProvider = new WatchTreeProvider();
     context.subscriptions.push(
         vscode.window.registerTreeDataProvider(
             "watch",
@@ -104,10 +106,10 @@ function activate(context)
     vscode.debug.registerDebugAdapterTrackerFactory("python", { createDebugAdapterTracker: () => debuggerTracker });
 
     context.subscriptions.push(
-		vscode.languages.registerCodeActionsProvider(
+        vscode.languages.registerCodeActionsProvider(
             "python",
             {
-                provideCodeActions: function()
+                provideCodeActions: function ()
                 {
                     if (vscode.debug.activeDebugSession === undefined)
                     {
@@ -124,19 +126,19 @@ function activate(context)
                 }
             },
             {
-			    providedCodeActionKinds: [vscode.CodeActionKind.Empty]
-		    }
-        )
-	);
-
-    context.subscriptions.push(
-		vscode.commands.registerCommand("computervision.helloWorld", 
-            async function(editor, _, pythonCode)
-            {
-                
+                providedCodeActionKinds: [vscode.CodeActionKind.Empty]
             }
         )
-	);
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand("computervision.helloWorld",
+            async function (editor, _, pythonCode)
+            {
+
+            }
+        )
+    );
 }
 
 function deactivate() { }
