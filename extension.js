@@ -56,7 +56,30 @@ function activate(context)
         onDidSendMessage: async function(message) {
             if (message.type === "event" && message.event === "stopped" && message.body.threadId !== undefined)
             {
-                console.log("Debugger stopped");
+                const session = vscode.debug.activeDebugSession;
+                if (session === undefined)
+                {
+                    return;
+                }
+                let response;
+                response = await session.customRequest('stackTrace', { threadId: 1 })
+                let frameId = response.stackFrames[0].id;
+                response = await session.customRequest("evaluate",
+                    {
+                        expression: "variable",
+                        frameId: frameId
+                    }
+                )
+                console.log(response);
+
+                response = await session.customRequest(
+                    "variables",
+                    {
+                        variablesReference: response.variablesReference,
+                        filter: "indexed"
+                    }
+                );
+                console.log(response);
             }
         }
     };
@@ -100,21 +123,7 @@ function activate(context)
 		vscode.commands.registerCommand("computervision.helloWorld", 
             async function(editor, _, pythonCode)
             {
-                const session = vscode.debug.activeDebugSession;
-                if (session === undefined)
-                {
-                    return;
-                }
-                let response;
-                response = await session.customRequest('stackTrace', { threadId: 1 })
-                let frameId = response.stackFrames[0].id;
-                response = await session.customRequest("evaluate",
-                    {
-                        expression: "\"Hello\"",
-                        frameId: frameId
-                    }
-                )
-                console.log(response);
+                
             }
         )
 	);

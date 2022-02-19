@@ -1,2 +1,4 @@
-message = "Hello, world!"
-print(message)
+import numpy as np
+
+variable = np.eye(800)
+pass
