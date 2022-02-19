@@ -46,7 +46,7 @@ class ImageViewer
                 "Image View",
                 vscode.ViewColumn.Beside,
                 {
-                    localResourceRoots: [this.context.storageUri]
+                    localResourceRoots: [this.context.storageUri, vscode.Uri.file(path.join(this.context.extensionUri.fsPath, "webview"))]
                 }
             );
 
