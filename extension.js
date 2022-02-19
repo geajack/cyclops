@@ -1,4 +1,6 @@
 const vscode = require("vscode");
+const fs = require("fs");
+const path = require("path");
 
 module.exports = {
     activate,
@@ -62,7 +64,7 @@ function activate(context)
                     return;
                 }
                 let response;
-                response = await session.customRequest('stackTrace', { threadId: 1 })
+                response = await session.customRequest("stackTrace", { threadId: 1 })
                 let frameId = response.stackFrames[0].id;
                 response = await session.customRequest("evaluate",
                     {
@@ -72,7 +74,20 @@ function activate(context)
                         frameId: frameId
                     }
                 )
-                console.log(response);
+
+                let panel = vscode.window.createWebviewPanel(
+                    "examplePanel",
+                    "This is the title",
+                    vscode.ViewColumn.Beside
+                );
+
+                let pathToHtml = vscode.Uri.file(
+                    path.join(context.extensionPath, "index.html")
+                );                
+                let pathUri = pathToHtml.with({scheme: "vscode-resource"});   
+                let html = fs.readFileSync(pathUri.fsPath, "utf8");
+                html = html.replace("{{extensionPath}}", panel.webview.asWebviewUri(context.extensionUri));
+                panel.webview.html = html;
             }
         }
     };
