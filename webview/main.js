@@ -26,11 +26,8 @@ class App
                 console.log(this.renderer.canvas.clientHeight, this.renderer.canvas.height);
                 let width  = this.renderer.canvas.clientWidth;
                 let height = this.renderer.canvas.clientHeight;
-                if (this.renderer.canvas.width != width || this.renderer.canvas.height != height)
-                {
-                    this.renderer.canvas.width = width;
-                    this.renderer.canvas.height = height;
-                }
+                this.renderer.canvas.width = width;
+                this.renderer.canvas.height = height;
             break;
         }
 
@@ -41,8 +38,6 @@ class App
 let canvas = document.querySelector("canvas").getContext("2d");
 
 window.addEventListener("message", onMessage);
-
-document.querySelector("canvas").addEventListener("resize", () => console.log("resize"));
 
 const app = new App(canvas);
 
