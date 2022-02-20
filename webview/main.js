@@ -19,19 +19,28 @@ class App
             return;
         }
 
+        let width  = this.renderer.canvas.clientWidth;
+        let height = this.renderer.canvas.clientHeight;
+
         switch (event.type)
         {
             case "resize":
             case "start":
-                console.log(this.renderer.canvas.clientHeight, this.renderer.canvas.height);
-                let width  = this.renderer.canvas.clientWidth;
-                let height = this.renderer.canvas.clientHeight;
                 this.renderer.canvas.width = width;
                 this.renderer.canvas.height = height;
             break;
         }
 
-        this.renderer.drawImage(this.image, 0, 0);
+        let imageX = (width - this.image.width) / 2;
+        let imageY = (height - this.image.height) / 2;
+
+        this.renderer.clearRect(0, 0, width, height);
+
+        this.renderer.drawImage(
+            this.image,
+            imageX,
+            imageY
+        );
     }
 }
 
