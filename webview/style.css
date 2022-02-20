@@ -1,12 +1,76 @@
-body
+html, body
 {
-    padding: 50px;
+    height: 100%;
+    overflow: hidden;
     display: flex;
     align-content: center;
-    justify-content: center;    
+    justify-content: center;
+    flex-direction: column;
+}
+
+main
+{
+    position: relative;
+    padding: 40px;
+    flex: 1;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 img
 {
-    margin: auto;
+    image-rendering: pixelated;
+    cursor: crosshair;
+}
+
+footer
+{
+    height: 80px;
+    width: 100%;
+    bottom: 0px;
+    /* border-top: 1px solid var(--vscode-editorWidget-border); */
+    background-color: var(--vscode-editorWidget-background);
+    box-shadow: 0px -3px 3px rgba(0, 0, 0, 0.05);
+}
+
+.positionLabel
+{
+    position: absolute;
+    width: 30px;
+    height: 18px;
+    background-color: white;
+    color: black;
+    padding: 2px;
+}
+
+#xLabel
+{
+    text-align: right;
+    vertical-align: top;
+}
+
+#yLabel
+{
+    text-align: left;
+    vertical-align: bottom;
+}
+
+#marchingAnts
+{
+    position: absolute;
+    border: 2px solid white;
+    border-top: none;
+    border-left: none;
+    cursor: crosshair;
+}
+
+#marchingAnts > div
+{
+    width: 100%;
+    height: 100%;
+    border: 2px dashed black;
+    border-left: none;
+    border-top: none;
 }

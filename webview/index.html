@@ -5,10 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{extensionPath}}/webview/style.css" />
-    <script src="{{extensionPath}}/webview/main.js"></script>
+    <script src="{{extensionPath}}/webview/main.js" defer></script>
     <title>Document</title>
 </head>
 <body>
-    <img src="{{storagePath}}/{{imageFileName}}" />
+    <main>
+        <img src="{{storagePath}}/{{imageFileName}}" id="image" />
+        <div id="marchingAnts">
+            <div></div>
+        </div>
+        <span class="positionLabel" id="xLabel"></span>
+        <span class="positionLabel" id="yLabel"></span>
+    </main>
+    <footer></footer>
 </body>
 </html>
