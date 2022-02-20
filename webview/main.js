@@ -1,23 +1,16 @@
 (function()
 {
-    
-    let img = document.getElementById("image");
-    
-    let ants = document.getElementById("marchingAnts");
-    img.addEventListener("mousemove", onMouseMove);
-    ants.addEventListener("mousemove", onMouseMove);
-    
-    let xLabel = document.getElementById("xLabel");
-    let yLabel = document.getElementById("yLabel");
-    
+    let canvas = document.querySelector("canvas").getContext("2d");
+
     window.addEventListener("message", onMessage);
 
     async function onMessage(event)
     {
         let imageUri = event.data.image;
-        console.log(imageUri);
 
-        img.src = imageUri;
+        let image = new Image();
+        image.src = imageUri;
+        image.addEventListener("load", () => canvas.drawImage(image, 0, 0));
     }
 
     function onMouseMove(event)
