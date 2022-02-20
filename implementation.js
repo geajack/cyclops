@@ -51,15 +51,19 @@ class ImageViewer
                 }
             );
 
-            let pathToHtml = vscode.Uri.file(
-                path.join(this.context.extensionPath, "webview", "index.html")
-            );
-            let pathUri = pathToHtml.with({ scheme: "vscode-resource" });
-            let html = fs.readFileSync(pathUri.fsPath, "utf8");
+            let htmlPath = path.join(this.context.extensionPath, "webview", "index.html");
+            let html = fs.readFileSync(htmlPath, "utf8");
             html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(this.context.extensionUri));
             html = html.replaceAll("{{storagePath}}", panel.webview.asWebviewUri(this.context.storageUri));
-            html = html.replaceAll("{{imageFileName}}", outputFileName);
+            // html = html.replaceAll("{{imageFileName}}", outputFileName);
             panel.webview.html = html;
+
+            let imageUri = panel.webview.asWebviewUri(
+                vscode.Uri.file(
+                    path.join(this.context.storageUri.fsPath, outputFileName)
+                )
+            );
+            panel.webview.postMessage({ image: imageUri.toString() });
         }
         else
         {
