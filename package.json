@@ -1,6 +1,9 @@
 {
     "name": "computervision",
     "publisher": "Jack Millist",
+    "repository": {
+        "url": "https://github.com/geajack/vscode-computer-vision-extenstion"
+    },
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.32.0"
