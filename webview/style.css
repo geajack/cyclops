@@ -2,6 +2,8 @@ html, body
 {
     height: 100%;
     overflow: hidden;
+    margin: 0px;
+    padding: 0px;
 }
 
 body
@@ -9,7 +11,6 @@ body
     display: flex;
     flex-direction: column;
     height: 100%;
-    margin: 0px;
 }
 
 main
@@ -36,4 +37,30 @@ footer
     border-top: 1px solid var(--vscode-editorWidget-border);
     background-color: var(--vscode-editorWidget-background);
     box-shadow: 0px -3px 3px rgba(0, 0, 0, 0.05);
+}
+
+.contextMenu
+{
+    position: absolute;
+    width: 100px;
+    background: black;
+    color: white;
+    box-shadow: 0px -3px 3px rgba(0, 0, 0 0.5);
+    cursor: default;
+    padding: 5px;
+}
+
+.menuItem
+{
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--vscode-editorWidget-border);
+}
+
+.menuItem:hover
+{
+    background-color: white;
+    color: black;
 }
