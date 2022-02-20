@@ -1,4 +1,4 @@
 import cv2
 
-variable = cv2.imread("../icon.png")
+variable = cv2.imread("crocodile.jpg")
 pass
