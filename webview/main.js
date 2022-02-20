@@ -1,33 +1,59 @@
-(function()
+class App
 {
-    let canvas = document.querySelector("canvas").getContext("2d");
-
-    window.addEventListener("message", onMessage);
-
-    async function onMessage(event)
+    constructor(canvas)
     {
-        let imageUri = event.data.image;
-
-        let image = new Image();
-        image.src = imageUri;
-        image.addEventListener("load", () => canvas.drawImage(image, 0, 0));
+        this.started = false;
+        this.renderer = canvas;
     }
 
-    function onMouseMove(event)
+    start(image)
     {
-        ants.style.left = (img.offsetLeft + 1) + "px";
-        ants.style.top = (img.offsetTop + 1) + "px";
-        ants.style.width = (event.offsetX) + "px";
-        ants.style.height = (event.offsetY) + "px";
-        
-        let width = xLabel.offsetWidth;
-        let height = xLabel.offsetHeight;
-        xLabel.style.left = (img.offsetLeft + event.offsetX + 1) + "px";
-        xLabel.style.top = (img.offsetTop - height) + "px";
-        yLabel.style.left = (img.offsetLeft - width) + "px";
-        yLabel.style.top = (img.offsetTop + event.offsetY + 1) + "px";
-
-        xLabel.innerText = parseInt(img.naturalWidth * event.offsetX / img.width);
-        yLabel.innerText = parseInt(img.naturalHeight * event.offsetY / img.height);
+        this.image = image;
+        this.started = true;
+        this.render({ type: "start" });
     }
-})();
+
+    render(event)
+    {
+        if (!this.started) {
+            return;
+        }
+
+        switch (event.type)
+        {
+            case "resize":
+            case "start":
+                console.log(this.renderer.canvas.clientHeight, this.renderer.canvas.height);
+                let width  = this.renderer.canvas.clientWidth;
+                let height = this.renderer.canvas.clientHeight;
+                if (this.renderer.canvas.width != width || this.renderer.canvas.height != height)
+                {
+                    this.renderer.canvas.width = width;
+                    this.renderer.canvas.height = height;
+                }
+            break;
+        }
+
+        this.renderer.drawImage(this.image, 0, 0);
+    }
+}
+
+let canvas = document.querySelector("canvas").getContext("2d");
+
+window.addEventListener("message", onMessage);
+
+document.querySelector("canvas").addEventListener("resize", () => console.log("resize"));
+
+const app = new App(canvas);
+
+let resizeObserver = new ResizeObserver(() => app.render({ type: "resize" }));
+resizeObserver.observe(canvas.canvas, { box: "border-box"});
+
+async function onMessage(event)
+{
+    let imageUri = event.data.image;
+
+    let image = new Image();
+    image.src = imageUri;
+    image.addEventListener("load", () => app.start(image));
+}
