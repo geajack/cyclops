@@ -45,7 +45,7 @@ class ImageViewer
         {
             let panel = vscode.window.createWebviewPanel(
                 "panel",
-                "Image View",
+                pythonCode,
                 vscode.ViewColumn.Beside,
                 {
                     localResourceRoots: [this.context.storageUri, vscode.Uri.file(path.join(this.context.extensionUri.fsPath, "webview"))],
@@ -66,7 +66,7 @@ class ImageViewer
             );
             panel.webview.postMessage({ image: imageUri.toString() });
 
-            this.viewTreeProvider.addView(panel, this.context);
+            this.viewTreeProvider.addView(panel, pythonCode, this.context);
         }
         else
         {
@@ -86,17 +86,22 @@ class ViewTreeProvider
         this.onDidChangeTreeData = this.onDidChangeTreeDataEventEmitter.event;
     }
 
-    addView(panel, context)
+    addView(panel, expression, context)
     {
         panel.onDidDispose(
             () => {
-                this.openPanels = this.openPanels.filter(p => p !== panel);
+                this.openPanels = this.openPanels.filter(info => info.panel !== panel);
                 this.onDidChangeTreeDataEventEmitter.fire();
             },
             null,
             context.subscriptions
         );
-        this.openPanels.push(panel);
+        this.openPanels.push(
+            {
+                panel: panel,
+                expression: expression
+            }
+        );
         this.onDidChangeTreeDataEventEmitter.fire();
     }
 
@@ -110,10 +115,10 @@ class ViewTreeProvider
         if (!element)
         {
             let items = [];
-            for (let panel of this.openPanels)
+            for (let info of this.openPanels)
             {
                 let item = {};
-                item.label = "A panel";                
+                item.label = info.expression;             
                 items.push(item)
             }
             return items;
