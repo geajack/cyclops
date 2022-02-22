@@ -13,9 +13,10 @@ function getImageName()
 
 class ImageViewer
 {
-    constructor(context)
+    constructor(context, viewTreeProvider)
     {
         this.context = context;
+        this.viewTreeProvider = viewTreeProvider;
     }
 
     async view(pythonCode)
@@ -56,7 +57,6 @@ class ImageViewer
             let html = fs.readFileSync(htmlPath, "utf8");
             html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(this.context.extensionUri));
             html = html.replaceAll("{{storagePath}}", panel.webview.asWebviewUri(this.context.storageUri));
-            // html = html.replaceAll("{{imageFileName}}", outputFileName);
             panel.webview.html = html;
 
             let imageUri = panel.webview.asWebviewUri(
@@ -65,6 +65,8 @@ class ImageViewer
                 )
             );
             panel.webview.postMessage({ image: imageUri.toString() });
+
+            this.viewTreeProvider.addView(panel, this.context);
         }
         else
         {
@@ -72,6 +74,57 @@ class ImageViewer
         }
     }
 }
+
+class ViewTreeProvider
+{
+    constructor()
+    {
+        this.openPanels = [];
+
+        this.onDidChangeTreeDataEventEmitter = new vscode.EventEmitter();
+
+        this.onDidChangeTreeData = this.onDidChangeTreeDataEventEmitter.event;
+    }
+
+    addView(panel, context)
+    {
+        panel.onDidDispose(
+            () => {
+                this.openPanels = this.openPanels.filter(p => p !== panel);
+                this.onDidChangeTreeDataEventEmitter.fire();
+            },
+            null,
+            context.subscriptions
+        );
+        this.openPanels.push(panel);
+        this.onDidChangeTreeDataEventEmitter.fire();
+    }
+
+    getTreeItem(element)
+    {
+        return element;
+    }
+
+    async getChildren(element)
+    {
+        if (!element)
+        {
+            let items = [];
+            for (let panel of this.openPanels)
+            {
+                let item = {};
+                item.label = "A panel";                
+                items.push(item)
+            }
+            return items;
+        }
+        else
+        {
+            return [];
+        }
+    }
+}
+
 
 function provideCodeActions(document, selectionRange)
 {
@@ -106,5 +159,6 @@ function provideCodeActions(document, selectionRange)
 
 module.exports = {
     ImageViewer,
+    ViewTreeProvider,
     provideCodeActions
 };

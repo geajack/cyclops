@@ -9,28 +9,6 @@ module.exports = {
     deactivate,
 };
 
-class WatchTreeProvider
-{
-    getTreeItem(element)
-    {
-        return element;
-    }
-
-    async getChildren(element)
-    {
-        if (!element)
-        {
-            let item = {};
-            item.label = "Hello, world!";
-            return [item];
-        }
-        else
-        {
-            return [];
-        }
-    }
-}
-
 function activate(context)
 {
     const debuggerTracker = {
@@ -72,13 +50,13 @@ function activate(context)
         }
     };
 
-    // const watchTreeProvider = new WatchTreeProvider();
-    // context.subscriptions.push(
-    //     vscode.window.registerTreeDataProvider(
-    //         "watch",
-    //         watchTreeProvider
-    //     )
-    // );
+    const viewTreeProvider = new impl.ViewTreeProvider();
+    context.subscriptions.push(
+        vscode.window.registerTreeDataProvider(
+            "views",
+            viewTreeProvider
+        )
+    );
 
     let storagePath = context.storageUri.fsPath;
     fs.mkdirSync(storagePath, { recursive: true });
@@ -90,7 +68,7 @@ function activate(context)
         );
     }
 
-    const imageViewer = new impl.ImageViewer(context);
+    const imageViewer = new impl.ImageViewer(context, viewTreeProvider);
 
     vscode.debug.registerDebugAdapterTrackerFactory("python", { createDebugAdapterTracker: () => debuggerTracker });
 
