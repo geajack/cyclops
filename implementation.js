@@ -30,10 +30,11 @@ class ImageViewer
         let frameId = response.stackFrames[0].id;
 
         let outputFileName = getImageName() + ".png";
+        let outputFilePath = path.join(this.context.storageUri.fsPath, outputFileName)
 
         response = await session.customRequest("evaluate",
             {
-                expression: `cv2.imwrite("${this.context.storageUri.fsPath}/${outputFileName}", (${pythonCode}))`,
+                expression: `cv2.imwrite(r"${outputFilePath}", (${pythonCode}))`,
                 frameId: frameId
             }
         )
