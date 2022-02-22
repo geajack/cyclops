@@ -35,8 +35,11 @@ class App
             break;
 
             case "mousemove":
-                this.mouseX = event.event.offsetX;
-                this.mouseY = event.event.offsetY;
+                if (!contextMenu.isOpen())
+                {
+                    this.mouseX = event.event.offsetX;
+                    this.mouseY = event.event.offsetY;
+                }
             break;
         }
 
@@ -53,8 +56,8 @@ class App
             imageY
         );
 
-        this.mouseX += 0.5;
-        this.mouseY += 0.5;
+        this.mouseX = Math.floor(this.mouseX) + 0.5;
+        this.mouseY = Math.floor(this.mouseY) + 0.5;
 
         let inImage = (this.mouseX <= imageX + imageW) && (this.mouseX >= imageX) && (this.mouseY <= imageY + imageH) && (this.mouseY >= imageY);
         if (inImage)
@@ -136,6 +139,11 @@ class ContextMenu
     {
         this.menuElement = null;
         document.body.addEventListener("click", this.destroy.bind(this));
+    }
+
+    isOpen()
+    {
+        return this.menuElement !== null;
     }
 
     destroy()
