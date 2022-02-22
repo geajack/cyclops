@@ -112,7 +112,8 @@ class App
             if (event.type === "contextmenu")
             {
                 event.event.preventDefault();
-                contextMenu(
+                contextMenu.destroy();
+                contextMenu.spawn(
                     event.event.pageX,
                     event.event.pageY,
                     [
@@ -129,36 +130,55 @@ class App
     }
 }
 
-function contextMenu(x, y, menu)
+class ContextMenu
 {
-    let menuElement = document.createElement("div");
-    menuElement.className = "contextMenu";
-    for (let item of menu)
+    constructor()
     {
-        let itemElement = document.createElement("div");
-        itemElement.className = "menuItem";
-        itemElement.innerText = item.label;
-        menuElement.appendChild(itemElement);
-
-        itemElement.addEventListener(
-            "click",
-            () =>
-            {
-                document.body.removeChild(menuElement);
-                item.action();
-            }
-        )
+        this.menuElement = null;
+        document.body.addEventListener("click", this.destroy.bind(this));
     }
 
-    menuElement.style.left = x + "px";
-    menuElement.style.top = y + "px";
+    destroy()
+    {
+        if (this.menuElement)
+        {
+            document.body.removeChild(this.menuElement);
+            this.menuElement = null;
+        }
+    }
 
-    document.body.appendChild(menuElement);
+    spawn(x, y, menu)
+    {
+        this.menuElement = document.createElement("div");
+        this.menuElement.className = "contextMenu";
+        for (let item of menu)
+        {
+            let itemElement = document.createElement("div");
+            itemElement.className = "menuItem";
+            itemElement.innerText = item.label;
+            this.menuElement.appendChild(itemElement);
+        
+            itemElement.addEventListener(
+                "click",
+                () =>
+                {
+                    item.action();                    
+                }
+            )
+        }
+        
+        this.menuElement.style.left = x + "px";
+        this.menuElement.style.top = y + "px";
+        
+        document.body.appendChild(this.menuElement);
+    }
 }
 
 let canvas = document.querySelector("canvas");
 
 window.addEventListener("message", onMessage);
+
+let contextMenu = new ContextMenu();
 
 const app = new App(canvas.getContext("2d"));
 
