@@ -13,17 +13,24 @@
         "onStartupFinished"
     ],
     "contributes": {
+        "commands": [
+            {
+                "command": "computerVision.closeView",
+                "category": "CV",
+                "title": "Close"
+            }
+        ],
         "viewsContainers": {
             "activitybar": [
                 {
-                    "id": "computer-vision",
+                    "id": "computerVision",
                     "title": "Computer Vision",
                     "icon": "icon.png"
                 }
             ]
         },
         "views": {
-            "computer-vision": [
+            "computerVision": [
                 {
                     "id": "views",
                     "name": "Views",
@@ -36,6 +43,14 @@
                     "name": "Watch",
                     "icon": "icon.png",
                     "contextualTitle": "Watch Expressions"
+                }
+            ]
+        },
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "computerVision.closeView",
+                    "when": "view == views"
                 }
             ]
         }

@@ -84,6 +84,8 @@ class ViewTreeProvider
         this.onDidChangeTreeDataEventEmitter = new vscode.EventEmitter();
 
         this.onDidChangeTreeData = this.onDidChangeTreeDataEventEmitter.event;
+
+        this.currentPanelID = 0;
     }
 
     addView(panel, expression, context)
@@ -99,10 +101,23 @@ class ViewTreeProvider
         this.openPanels.push(
             {
                 panel: panel,
-                expression: expression
+                expression: expression,
+                id: this.currentPanelID
             }
         );
+        this.currentPanelID++;
         this.onDidChangeTreeDataEventEmitter.fire();
+    }
+
+    onUserRequestedClosePanel(panelInfo)
+    {
+        for (let panel of this.openPanels)
+        {
+            if (panel.id === panelInfo.id)
+            {
+                panel.panel.dispose();
+            }
+        }
     }
 
     getTreeItem(element)
@@ -118,7 +133,8 @@ class ViewTreeProvider
             for (let info of this.openPanels)
             {
                 let item = {};
-                item.label = info.expression;             
+                item.label = info.expression;
+                item.id = info.id;
                 items.push(item)
             }
             return items;

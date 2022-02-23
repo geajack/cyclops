@@ -87,6 +87,13 @@ function activate(context)
     context.subscriptions.push(
         vscode.commands.registerCommand(constants.VIEW_IMAGE_COMMAND_ID, pythonCode => imageViewer.view(pythonCode))
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            constants.CLOSE_VIEW_COMMAND_ID,
+            viewTreeProvider.onUserRequestedClosePanel.bind(viewTreeProvider)
+        )
+    );
 }
 
 function deactivate() { }
