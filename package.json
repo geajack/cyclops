@@ -52,6 +52,12 @@
                     "command": "computerVision.closeView",
                     "when": "view == views"
                 }
+            ],
+            "commandPalette": [
+                {
+                    "command": "computerVision.closeView",
+                    "when": "false"
+                }
             ]
         }
     }
