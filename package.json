@@ -37,12 +37,6 @@
                     "icon": "icon.png",
                     "visibility": "collapsed",
                     "contextualTitle": "Open views"
-                },
-                {
-                    "id": "watch",
-                    "name": "Watch",
-                    "icon": "icon.png",
-                    "contextualTitle": "Watch Expressions"
                 }
             ]
         },
