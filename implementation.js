@@ -147,6 +147,23 @@ class ViewTreeProvider
     }
 }
 
+class StackFrameTreeProvider
+{
+    getTreeItem(element)
+    {
+        return element;
+    }
+
+    async getChildren(element)
+    {
+        return [
+            {
+                id: 0,
+                label: "Hello"
+            }
+        ];
+    }
+}
 
 function provideCodeActions(document, selectionRange)
 {
@@ -182,5 +199,6 @@ function provideCodeActions(document, selectionRange)
 module.exports = {
     ImageViewer,
     ViewTreeProvider,
+    StackFrameTreeProvider,
     provideCodeActions
 };

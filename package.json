@@ -34,9 +34,14 @@
                 {
                     "id": "views",
                     "name": "Views",
-                    "icon": "icon.png",
                     "visibility": "collapsed",
                     "contextualTitle": "Open views"
+                },
+                {
+                    "id": "stackFrames",
+                    "name": "Stack Frames",
+                    "visibility": "visible",
+                    "contextualTitle": "Active stack frames"
                 }
             ]
         },

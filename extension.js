@@ -58,6 +58,14 @@ function activate(context)
         )
     );
 
+    const stackFrameProvider = new impl.StackFrameTreeProvider();
+    context.subscriptions.push(
+        vscode.window.registerTreeDataProvider(
+            "stackFrames",
+            stackFrameProvider
+        )
+    );
+
     let storagePath = context.storageUri.fsPath;
     fs.mkdirSync(storagePath, { recursive: true });
 
