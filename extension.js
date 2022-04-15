@@ -11,42 +11,46 @@ module.exports = {
 
 function activate(context)
 {
+    const stackFrameProvider = new impl.StackFrameTreeProvider();
+
     const debuggerTracker = {
         onDidSendMessage: async function (message)
         {
-            // if (message.type === "event" && message.event === "stopped" && message.body.threadId !== undefined)
-            // {
-            //     const session = vscode.debug.activeDebugSession;
-            //     if (session === undefined)
-            //     {
-            //         return;
-            //     }
-            //     let response;
-            //     response = await session.customRequest("stackTrace", { threadId: 1 })
-            //     let frameId = response.stackFrames[0].id;
+            if (message.type === "event" && message.event === "stopped" && message.body.threadId !== undefined)
+            {
+                console.log("stopped");
+                const session = vscode.debug.activeDebugSession;
+                if (session === undefined)
+                {
+                    return;
+                }
+                let frames = await session.customRequest("stackTrace", { threadId: 1 })
+                stackFrameProvider.setStack(frames);
+                // let response;
+                // let frameId = response.stackFrames[0].id;
 
 
-            //     response = await session.customRequest("evaluate",
-            //         {
-            //             expression: `cv2.imwrite("${context.extensionPath}/output.png", variable)`,
-            //             frameId: frameId
-            //         }
-            //     )
+                // response = await session.customRequest("evaluate",
+                //     {
+                //         expression: `cv2.imwrite("${context.extensionPath}/output.png", variable)`,
+                //         frameId: frameId
+                //     }
+                // )
 
-            //     let panel = vscode.window.createWebviewPanel(
-            //         "panel",
-            //         "Image View",
-            //         vscode.ViewColumn.Beside
-            //     );
+                // let panel = vscode.window.createWebviewPanel(
+                //     "panel",
+                //     "Image View",
+                //     vscode.ViewColumn.Beside
+                // );
 
-            //     let pathToHtml = vscode.Uri.file(
-            //         path.join(context.extensionPath, "webview", "index.html")
-            //     );
-            //     let pathUri = pathToHtml.with({ scheme: "vscode-resource" });
-            //     let html = fs.readFileSync(pathUri.fsPath, "utf8");
-            //     html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(context.extensionUri));
-            //     panel.webview.html = html;
-            // }
+                // let pathToHtml = vscode.Uri.file(
+                //     path.join(context.extensionPath, "webview", "index.html")
+                // );
+                // let pathUri = pathToHtml.with({ scheme: "vscode-resource" });
+                // let html = fs.readFileSync(pathUri.fsPath, "utf8");
+                // html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(context.extensionUri));
+                // panel.webview.html = html;
+            }
         }
     };
 
@@ -58,7 +62,6 @@ function activate(context)
         )
     );
 
-    const stackFrameProvider = new impl.StackFrameTreeProvider();
     context.subscriptions.push(
         vscode.window.registerTreeDataProvider(
             "stackFrames",

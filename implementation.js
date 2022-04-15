@@ -149,19 +149,43 @@ class ViewTreeProvider
 
 class StackFrameTreeProvider
 {
+    constructor()
+    {
+        this.onDidChangeTreeDataEventEmitter = new vscode.EventEmitter();
+        this.onDidChangeTreeData = this.onDidChangeTreeDataEventEmitter.event;
+        this.frames = null;
+    }
+
     getTreeItem(element)
     {
         return element;
     }
 
+    setStack(frames)
+    {
+        console.log(frames);
+        this.frames = frames.stackFrames;
+        this.onDidChangeTreeDataEventEmitter.fire();
+    }
+
     async getChildren(element)
     {
-        return [
-            {
-                id: 0,
-                label: "Hello"
-            }
-        ];
+        if (element)
+        {
+            return [];
+        }
+        
+        if (this.frames !== null)
+        {
+            return this.frames.map(
+                frame => {
+                    return {
+                        label: frame.name,
+                        id: frame.id
+                    }
+                }
+            )
+        }
     }
 }
 
