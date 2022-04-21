@@ -31,14 +31,14 @@ class ImageViewer
         let frameId = response.stackFrames[0].id;
 
         let outputFileName = getImageName() + ".png";
-        let outputFilePath = path.join(this.context.storageUri.fsPath, outputFileName)
+        let outputFilePath = path.join(this.context.storageUri.fsPath, outputFileName);
 
         response = await session.customRequest("evaluate",
             {
                 expression: `cv2.imwrite(r"${outputFilePath}", (${pythonCode}))`,
                 frameId: frameId
             }
-        )
+        );
 
         let fileWasCreated = fs.existsSync(path.join(this.context.storageUri.fsPath, outputFileName));
         if (fileWasCreated)
