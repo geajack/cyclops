@@ -164,11 +164,12 @@ class ViewTreeProvider
 
 class StackFrameTreeProvider
 {
-    constructor()
+    constructor(imageViewer)
     {
         this.onDidChangeTreeDataEventEmitter = new vscode.EventEmitter();
         this.onDidChangeTreeData = this.onDidChangeTreeDataEventEmitter.event;
         this.frames = null;
+        this.imageViewer = imageViewer;
     }
 
     getTreeItem(element)
@@ -195,7 +196,8 @@ class StackFrameTreeProvider
                 frame => {
                     return {
                         label: frame.name,
-                        id: frame.id
+                        id: frame.id,
+                        description: path.basename(frame.source.path)
                     }
                 }
             )

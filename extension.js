@@ -11,7 +11,18 @@ module.exports = {
 
 function activate(context)
 {
-    const stackFrameProvider = new impl.StackFrameTreeProvider();
+    
+    const viewTreeProvider = new impl.ViewTreeProvider();
+    context.subscriptions.push(
+        vscode.window.registerTreeDataProvider(
+            "views",
+            viewTreeProvider
+        )
+    );
+        
+    const imageViewer = new impl.ImageViewer(context, viewTreeProvider);
+            
+    const stackFrameProvider = new impl.StackFrameTreeProvider(imageViewer);
 
     const debuggerTracker = {
         onDidSendMessage: async function (message)
@@ -26,25 +37,17 @@ function activate(context)
                         return;
                     }
                     let frames = await session.customRequest("stackTrace", { threadId: 1 })
-                    stackFrameProvider.setStack(frames);
                     imageViewer.onDebuggingStopped();
+                    stackFrameProvider.setStack(frames);
                 }
                 else if (message.event === "terminated")
                 {
-                    stackFrameProvider.setStack([]);
                     imageViewer.onDebuggingStopped();
+                    stackFrameProvider.setStack([]);
                 }
             }
         }
     };
-
-    const viewTreeProvider = new impl.ViewTreeProvider();
-    context.subscriptions.push(
-        vscode.window.registerTreeDataProvider(
-            "views",
-            viewTreeProvider
-        )
-    );
 
     context.subscriptions.push(
         vscode.window.registerTreeDataProvider(
@@ -63,7 +66,6 @@ function activate(context)
         );
     }
 
-    const imageViewer = new impl.ImageViewer(context, viewTreeProvider);
 
     vscode.debug.registerDebugAdapterTrackerFactory("python", { createDebugAdapterTracker: () => debuggerTracker });
 
