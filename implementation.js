@@ -178,7 +178,6 @@ class StackFrameTreeProvider
 
     setStack(frames)
     {
-        console.log(frames);
         this.frames = frames.stackFrames;
         this.onDidChangeTreeDataEventEmitter.fire();
     }
