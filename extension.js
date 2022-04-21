@@ -27,11 +27,12 @@ function activate(context)
                     }
                     let frames = await session.customRequest("stackTrace", { threadId: 1 })
                     stackFrameProvider.setStack(frames);
+                    imageViewer.onDebuggingStopped();
                 }
                 else if (message.event === "terminated")
                 {
                     stackFrameProvider.setStack([]);
-                    imageViewer.onDebuggingEnded();
+                    imageViewer.onDebuggingStopped();
                 }
             }
         }

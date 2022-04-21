@@ -25,7 +25,7 @@ class ImageViewer
         this.stackFrameID = frameID;
     }
 
-    onDebuggingEnded()
+    onDebuggingStopped()
     {
         this.stackFrameID = null;
     }
