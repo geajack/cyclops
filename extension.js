@@ -16,40 +16,23 @@ function activate(context)
     const debuggerTracker = {
         onDidSendMessage: async function (message)
         {
-            if (message.type === "event" && message.event === "stopped" && message.body.threadId !== undefined)
+            console.log(message);
+            if (message.type === "event")
             {
-                console.log("stopped");
-                const session = vscode.debug.activeDebugSession;
-                if (session === undefined)
+                if (message.event === "stopped" && message.body.threadId !== undefined)
                 {
-                    return;
+                    const session = vscode.debug.activeDebugSession;
+                    if (session === undefined)
+                    {
+                        return;
+                    }
+                    let frames = await session.customRequest("stackTrace", { threadId: 1 })
+                    stackFrameProvider.setStack(frames);
                 }
-                let frames = await session.customRequest("stackTrace", { threadId: 1 })
-                stackFrameProvider.setStack(frames);
-                // let response;
-                // let frameId = response.stackFrames[0].id;
-
-
-                // response = await session.customRequest("evaluate",
-                //     {
-                //         expression: `cv2.imwrite("${context.extensionPath}/output.png", variable)`,
-                //         frameId: frameId
-                //     }
-                // )
-
-                // let panel = vscode.window.createWebviewPanel(
-                //     "panel",
-                //     "Image View",
-                //     vscode.ViewColumn.Beside
-                // );
-
-                // let pathToHtml = vscode.Uri.file(
-                //     path.join(context.extensionPath, "webview", "index.html")
-                // );
-                // let pathUri = pathToHtml.with({ scheme: "vscode-resource" });
-                // let html = fs.readFileSync(pathUri.fsPath, "utf8");
-                // html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(context.extensionUri));
-                // panel.webview.html = html;
+                else if (message.event === "terminated")
+                {
+                    stackFrameProvider.setStack([]);
+                }
             }
         }
     };
