@@ -18,6 +18,11 @@
                 "command": "computerVision.closeView",
                 "category": "CV",
                 "title": "Close"
+            },
+            {
+                "command": "computerVision.switchStackFrame",
+                "category": "CV",
+                "title": "Use"
             }
         ],
         "viewsContainers": {
@@ -50,11 +55,20 @@
                 {
                     "command": "computerVision.closeView",
                     "when": "view == views"
+                },
+                {
+                    "command": "computerVision.switchStackFrame",
+                    "group": "inline",
+                    "when": "view == stackFrames"
                 }
             ],
             "commandPalette": [
                 {
                     "command": "computerVision.closeView",
+                    "when": "false"
+                },
+                {
+                    "command": "computerVision.switchStackFrame",
                     "when": "false"
                 }
             ]

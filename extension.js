@@ -16,7 +16,6 @@ function activate(context)
     const debuggerTracker = {
         onDidSendMessage: async function (message)
         {
-            console.log(message);
             if (message.type === "event")
             {
                 if (message.event === "stopped" && message.body.threadId !== undefined)
@@ -32,6 +31,7 @@ function activate(context)
                 else if (message.event === "terminated")
                 {
                     stackFrameProvider.setStack([]);
+                    imageViewer.onDebuggingEnded();
                 }
             }
         }
@@ -86,6 +86,13 @@ function activate(context)
         vscode.commands.registerCommand(
             constants.CLOSE_VIEW_COMMAND_ID,
             viewTreeProvider.onUserRequestedClosePanel.bind(viewTreeProvider)
+        )
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            constants.SWITCH_STACK_FRAME_COMMAND_ID,
+            frameInfo => imageViewer.setStackFrame(frameInfo.id)
         )
     );
 }

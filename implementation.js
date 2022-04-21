@@ -17,6 +17,17 @@ class ImageViewer
     {
         this.context = context;
         this.viewTreeProvider = viewTreeProvider;
+        this.stackFrameID = null;
+    }
+
+    setStackFrame(frameID)
+    {
+        this.stackFrameID = frameID;
+    }
+
+    onDebuggingEnded()
+    {
+        this.stackFrameID = null;
     }
 
     async view(pythonCode)
@@ -28,15 +39,19 @@ class ImageViewer
         }
         let response;
         response = await session.customRequest("stackTrace", { threadId: 1 })
-        let frameId = response.stackFrames[0].id;
 
         let outputFileName = getImageName() + ".png";
         let outputFilePath = path.join(this.context.storageUri.fsPath, outputFileName);
 
+        if (this.stackFrameID === null)
+        {
+            this.stackFrameID = response.stackFrames[0].id;
+        }
+
         response = await session.customRequest("evaluate",
             {
                 expression: `cv2.imwrite(r"${outputFilePath}", (${pythonCode}))`,
-                frameId: frameId
+                frameId: this.stackFrameID
             }
         );
 
