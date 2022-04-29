@@ -78,38 +78,47 @@ class ImageViewer
     }
 }
 
-class ViewTreeProvider
+class ViewManager
 {
     constructor()
     {
-        this.openPanels = [];
-
-        this.onDidChangeTreeDataEventEmitter = new vscode.EventEmitter();
-
-        this.onDidChangeTreeData = this.onDidChangeTreeDataEventEmitter.event;
-
-        this.currentPanelID = 0;
+        this.views = [];
+        this.currentViewID = 0;
     }
 
-    addView(panel, expression, context)
+    addView(expression)
     {
-        panel.onDidDispose(
-            () => {
-                this.openPanels = this.openPanels.filter(info => info.panel !== panel);
-                this.onDidChangeTreeDataEventEmitter.fire();
-            },
-            null,
-            context.subscriptions
-        );
-        this.openPanels.push(
+        this.views.push(
             {
-                panel: panel,
+                label: expression,
                 expression: expression,
-                id: this.currentPanelID
+                id: this.currentViewID
             }
         );
-        this.currentPanelID++;
-        this.onDidChangeTreeDataEventEmitter.fire();
+        this.currentViewID++;
+    }
+
+    setPanelForView(panel, viewID)
+    {
+    }
+
+    unsetPanelForView(viewID)
+    {
+    }    
+
+    getViews()
+    {
+        return this.views;
+    }
+}
+
+class ViewTreeProvider
+{
+    constructor(viewManager)
+    {
+        this.viewManager = viewManager;
+        this.onDidChangeTreeDataEventEmitter = new vscode.EventEmitter();
+        this.onDidChangeTreeData = this.onDidChangeTreeDataEventEmitter.event;
     }
 
     getTreeItem(element)
@@ -122,10 +131,10 @@ class ViewTreeProvider
         if (!element)
         {
             let items = [];
-            for (let info of this.openPanels)
+            for (let info of this.viewManager.getViews())
             {
                 let item = {};
-                item.label = info.expression;
+                item.label = info.label;
                 item.id = info.id;
                 items.push(item)
             }
@@ -216,5 +225,6 @@ module.exports = {
     ImageViewer,
     ViewTreeProvider,
     StackFrameTreeProvider,
+    ViewManager,
     provideCodeActions
 };

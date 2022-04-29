@@ -12,8 +12,10 @@ module.exports = {
 function activate(context)
 {
     let stackFrameID = null;
+
+    const viewManager = new impl.ViewManager();
     
-    const viewTreeProvider = new impl.ViewTreeProvider();
+    const viewTreeProvider = new impl.ViewTreeProvider(viewManager);
     context.subscriptions.push(
         vscode.window.registerTreeDataProvider(
             "views",
@@ -97,10 +99,21 @@ function activate(context)
             constants.VIEW_IMAGE_COMMAND_ID,
             async function(pythonCode)
             {
+                let viewID = viewManager.addView(pythonCode);
+                viewTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+
                 let panel = await imageViewer.view(pythonCode, stackFrameID);
                 if (panel !== null)
                 {
-                    viewTreeProvider.addView(panel, pythonCode, context);
+                    viewManager.setPanelForView(panel, viewID);
+
+                    panel.onDidDispose(
+                        () => {
+                            viewManager.unsetPanelForView(viewID);
+                        },
+                        null,
+                        context.subscriptions
+                    );
                 }
                 else
                 {
