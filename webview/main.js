@@ -43,21 +43,34 @@ class App
             break;
         }
 
-        let imageW = this.image.width;
-        let imageH = this.image.height;
-        let imageX = Math.floor((width - this.image.width) / 2);
-        let imageY = Math.floor((height - this.image.height) / 2);
+        let xScale = width / this.image.width;
+        let yScale = height / this.image.height;
+        let scale = Math.min(xScale, yScale);
+        if (scale > 1)
+        {
+            scale = 1;
+        }
+
+        let imageW = scale * this.image.width;
+        let imageH = scale * this.image.height;
+        let imageX = Math.floor((width - imageW) / 2);
+        let imageY = Math.floor((height - imageH) / 2);
 
         this.renderer.clearRect(0, 0, width, height);
 
         this.renderer.drawImage(
             this.image,
             imageX,
-            imageY
+            imageY,
+            imageW,
+            imageH
         );
 
         this.mouseX = Math.floor(this.mouseX) + 0.5;
         this.mouseY = Math.floor(this.mouseY) + 0.5;
+
+        let trueMouseX = Math.floor((this.mouseX - imageX) / scale);
+        let trueMouseY = Math.floor((this.mouseY - imageY) / scale);
 
         let inImage = (this.mouseX <= imageX + imageW) && (this.mouseX >= imageX) && (this.mouseY <= imageY + imageH) && (this.mouseY >= imageY);
         if (inImage)
@@ -95,7 +108,7 @@ class App
             this.renderer.fillRect(this.mouseX, imageY - boxH, boxW, boxH);
             
             {
-                let text = Math.floor(this.mouseY - imageY).toString();
+                let text = trueMouseY.toString();
                 let metrics = this.renderer.measureText(text);
                 let textWidth = metrics.width;
                 let textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
@@ -104,7 +117,7 @@ class App
             }
 
             {
-                let text = Math.floor(this.mouseX - imageX).toString();
+                let text = trueMouseX.toString();
                 let metrics = this.renderer.measureText(text);
                 let textWidth = metrics.width;
                 let textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
@@ -123,7 +136,7 @@ class App
                         {
                             label: "Copy (x, y)",
                             action: () => navigator.clipboard.writeText(
-                                `${Math.floor(this.mouseX - imageX)}, ${Math.floor(this.mouseY - imageY)}`
+                                `${trueMouseX}, ${trueMouseY}`
                             )
                         }
                     ]
@@ -182,6 +195,15 @@ class ContextMenu
     }
 }
 
+async function onMessage(event)
+{
+    let imageUri = event.data.image;
+
+    let image = new Image();
+    image.src = imageUri;
+    image.addEventListener("load", () => app.start(image));
+}
+
 let canvas = document.querySelector("canvas");
 
 window.addEventListener("message", onMessage);
@@ -194,14 +216,4 @@ let resizeObserver = new ResizeObserver(() => app.render({ type: "resize" }));
 resizeObserver.observe(canvas, { box: "border-box"});
 
 canvas.addEventListener("mousemove", event => app.render({ type: "mousemove", event: event }));
-
 canvas.addEventListener("contextmenu", event => app.render({ type: "contextmenu", event: event }));
-
-async function onMessage(event)
-{
-    let imageUri = event.data.image;
-
-    let image = new Image();
-    image.src = imageUri;
-    image.addEventListener("load", () => app.start(image));
-}
