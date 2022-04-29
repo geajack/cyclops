@@ -36,9 +36,10 @@ function activate(context)
                     {
                         return;
                     }
-                    let frames = await session.customRequest("stackTrace", { threadId: 1 })
-                    imageViewer.onDebuggingStopped();
-                    stackFrameProvider.setStack(frames);
+                    let frames = await session.customRequest("stackTrace", { threadId: 1 });
+                    let topFrame = frames.stackFrames[0];
+                    imageViewer.setStackFrame(topFrame.id);
+                    stackFrameProvider.setStack(frames.stackFrames);
                 }
                 else if (message.event === "terminated")
                 {
@@ -53,7 +54,14 @@ function activate(context)
         "stackFrames",
         { treeDataProvider: stackFrameProvider }
     );
-    stackFrameTree.onDidChangeSelection(e => console.log(e.selection));
+    stackFrameTree.onDidChangeSelection(event => {
+        if (event.selection.length > 0)
+        {
+            let frameID = event.selection[0].id;
+            imageViewer.setStackFrame(frameID);
+            stackFrameProvider.onDidChangeTreeDataEventEmitter.fire();
+        }
+    });
 
     let storagePath = context.storageUri.fsPath;
     fs.mkdirSync(storagePath, { recursive: true });
@@ -88,13 +96,6 @@ function activate(context)
         vscode.commands.registerCommand(
             constants.CLOSE_VIEW_COMMAND_ID,
             viewTreeProvider.onUserRequestedClosePanel.bind(viewTreeProvider)
-        )
-    );
-
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            constants.SWITCH_STACK_FRAME_COMMAND_ID,
-            frameInfo => imageViewer.setStackFrame(frameInfo.id)
         )
     );
 }

@@ -25,6 +25,11 @@ class ImageViewer
         this.stackFrameID = frameID;
     }
 
+    getStackFrame()
+    {
+        return this.stackFrameID;
+    }
+
     onDebuggingStopped()
     {
         this.stackFrameID = null;
@@ -179,7 +184,7 @@ class StackFrameTreeProvider
 
     setStack(frames)
     {
-        this.frames = frames.stackFrames;
+        this.frames = frames;
         this.onDidChangeTreeDataEventEmitter.fire();
     }
 
@@ -197,7 +202,7 @@ class StackFrameTreeProvider
                     return {
                         label: frame.name,
                         id: frame.id,
-                        description: path.basename(frame.source.path)
+                        description: frame.id === this.imageViewer.getStackFrame() ? "active" : ""
                     }
                 }
             )
