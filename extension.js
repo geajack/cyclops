@@ -21,7 +21,7 @@ function activate(context)
         )
     );
         
-    const imageViewer = new impl.ImageViewer(context, viewTreeProvider);
+    const imageViewer = new impl.ImageViewer(context);
             
     const stackFrameProvider = new impl.StackFrameTreeProvider(imageViewer);
 
@@ -93,7 +93,21 @@ function activate(context)
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand(constants.VIEW_IMAGE_COMMAND_ID, pythonCode => imageViewer.view(pythonCode, stackFrameID))
+        vscode.commands.registerCommand(
+            constants.VIEW_IMAGE_COMMAND_ID,
+            async function(pythonCode)
+            {
+                let panel = await imageViewer.view(pythonCode, stackFrameID);
+                if (panel !== null)
+                {
+                    viewTreeProvider.addView(panel, pythonCode, context);
+                }
+                else
+                {
+                    vscode.window.showErrorMessage("Expression could not be saved as image!");
+                }
+            }
+        )
     );
 
     context.subscriptions.push(

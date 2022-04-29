@@ -13,10 +13,9 @@ function getImageName()
 
 class ImageViewer
 {
-    constructor(context, viewTreeProvider)
+    constructor(context)
     {
         this.context = context;
-        this.viewTreeProvider = viewTreeProvider;
     }
 
     async view(pythonCode, stackFrameID)
@@ -66,11 +65,11 @@ class ImageViewer
             );
             panel.webview.postMessage({ image: imageUri.toString() });
 
-            this.viewTreeProvider.addView(panel, pythonCode, this.context);
+            return panel;
         }
         else
         {
-            vscode.window.showErrorMessage("Expression could not be saved as image!");
+            return null;            
         }
     }
 }
