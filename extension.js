@@ -11,6 +11,7 @@ module.exports = {
 
 function activate(context)
 {
+    let stackFrameID = null;
     
     const viewTreeProvider = new impl.ViewTreeProvider();
     context.subscriptions.push(
@@ -38,12 +39,14 @@ function activate(context)
                     }
                     let frames = await session.customRequest("stackTrace", { threadId: 1 });
                     let topFrame = frames.stackFrames[0];
-                    imageViewer.setStackFrame(topFrame.id);
+                    stackFrameID = topFrame.id;
+                    stackFrameProvider.stackFrameID = topFrame.id;
                     stackFrameProvider.setStack(frames.stackFrames);
                 }
                 else if (message.event === "terminated")
                 {
-                    imageViewer.onDebuggingStopped();
+                    stackFrameID = null;
+                    stackFrameProvider.stackFrameID = null;
                     stackFrameProvider.setStack([]);
                 }
             }
@@ -58,7 +61,8 @@ function activate(context)
         if (event.selection.length > 0)
         {
             let frameID = event.selection[0].id;
-            imageViewer.setStackFrame(frameID);
+            stackFrameID = frameID;
+            stackFrameProvider.stackFrameID = frameID;
             stackFrameProvider.onDidChangeTreeDataEventEmitter.fire();
         }
     });
@@ -89,7 +93,7 @@ function activate(context)
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand(constants.VIEW_IMAGE_COMMAND_ID, pythonCode => imageViewer.view(pythonCode))
+        vscode.commands.registerCommand(constants.VIEW_IMAGE_COMMAND_ID, pythonCode => imageViewer.view(pythonCode, stackFrameID))
     );
 
     context.subscriptions.push(

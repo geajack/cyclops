@@ -17,25 +17,9 @@ class ImageViewer
     {
         this.context = context;
         this.viewTreeProvider = viewTreeProvider;
-        this.stackFrameID = null;
     }
 
-    setStackFrame(frameID)
-    {
-        this.stackFrameID = frameID;
-    }
-
-    getStackFrame()
-    {
-        return this.stackFrameID;
-    }
-
-    onDebuggingStopped()
-    {
-        this.stackFrameID = null;
-    }
-
-    async view(pythonCode)
+    async view(pythonCode, stackFrameID)
     {
         const session = vscode.debug.activeDebugSession;
         if (session === undefined)
@@ -48,15 +32,10 @@ class ImageViewer
         let outputFileName = getImageName() + ".png";
         let outputFilePath = path.join(this.context.storageUri.fsPath, outputFileName);
 
-        if (this.stackFrameID === null)
-        {
-            this.stackFrameID = response.stackFrames[0].id;
-        }
-
         response = await session.customRequest("evaluate",
             {
                 expression: `cv2.imwrite(r"${outputFilePath}", (${pythonCode}))`,
-                frameId: this.stackFrameID
+                frameId: stackFrameID
             }
         );
 
@@ -202,7 +181,7 @@ class StackFrameTreeProvider
                     return {
                         label: frame.name,
                         id: frame.id,
-                        description: frame.id === this.imageViewer.getStackFrame() ? "active" : ""
+                        description: frame.id === this.stackFrameID ? "active" : ""
                     }
                 }
             )
