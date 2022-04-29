@@ -13,6 +13,20 @@
         "onStartupFinished"
     ],
     "contributes": {
+        "commands": [
+            {
+                "command": "computerVision.removeExpression",
+                "category": "CV",
+                "title": "Remove",
+                "icon": "resources/font-awesome/trash-can.svg"
+            },
+            {
+                "command": "computerVision.openView",
+                "category": "CV",
+                "title": "Open View",
+                "icon": "resources/font-awesome/window-restore.svg"
+            }
+        ],
         "viewsContainers": {
             "activitybar": [
                 {
@@ -35,6 +49,20 @@
                     "name": "Stack Frames",
                     "visibility": "visible",
                     "contextualTitle": "Active stack frames"
+                }
+            ]
+        },
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "computerVision.removeExpression",
+                    "group": "inline",
+                    "when": "view == expressions"
+                },
+                {
+                    "command": "computerVision.openView",
+                    "group": "inline",                    
+                    "when": "view == expressions"
                 }
             ]
         }

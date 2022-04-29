@@ -122,6 +122,26 @@ function activate(context)
             }
         )
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "computerVision.removeExpression",
+            function(expressionInfo)
+            {
+                let { expression, id } = expressionInfo;
+            }
+        )
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "computerVision.openView",
+            function(expressionInfo)
+            {
+                let { expression, id } = expressionInfo;
+            }
+        )
+    );
 }
 
 function deactivate() { }

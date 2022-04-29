@@ -82,7 +82,7 @@ class ExpressionManager
 {
     constructor()
     {
-        this.expressions = [];
+        this.expressions = [{label:"hello", id: 0}];
         this.currentViewID = 0;
     }
 
