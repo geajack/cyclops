@@ -13,13 +13,17 @@ function getImageName()
 
 class ImageViewer
 {
-    constructor(context)
+    constructor(storageURI, extensionURI)
     {
-        this.context = context;
+        this.storageURI = storageURI;
+        this.extensionURI = extensionURI;
     }
 
     async view(pythonCode, stackFrameID)
     {
+        const storageURI = this.storageURI;
+        const extensionURI = this.extensionURI;
+
         const session = vscode.debug.activeDebugSession;
         if (session === undefined)
         {
@@ -29,7 +33,7 @@ class ImageViewer
         response = await session.customRequest("stackTrace", { threadId: 1 })
 
         let outputFileName = getImageName() + ".png";
-        let outputFilePath = path.join(this.context.storageUri.fsPath, outputFileName);
+        let outputFilePath = path.join(storageURI.fsPath, outputFileName);
 
         response = await session.customRequest("evaluate",
             {
@@ -38,7 +42,7 @@ class ImageViewer
             }
         );
 
-        let fileWasCreated = fs.existsSync(path.join(this.context.storageUri.fsPath, outputFileName));
+        let fileWasCreated = fs.existsSync(path.join(storageURI.fsPath, outputFileName));
         if (fileWasCreated)
         {
             let panel = vscode.window.createWebviewPanel(
@@ -46,21 +50,21 @@ class ImageViewer
                 pythonCode,
                 vscode.ViewColumn.Beside,
                 {
-                    localResourceRoots: [this.context.storageUri, vscode.Uri.file(path.join(this.context.extensionUri.fsPath, "webview"))],
+                    localResourceRoots: [storageURI, vscode.Uri.file(path.join(extensionURI.fsPath, "webview"))],
                     enableScripts: true,
                     retainContextWhenHidden: true
                 }
             );
 
-            let htmlPath = path.join(this.context.extensionPath, "webview", "index.html");
+            let htmlPath = path.join(extensionURI.fsPath, "webview", "index.html");
             let html = fs.readFileSync(htmlPath, "utf8");
-            html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(this.context.extensionUri));
-            html = html.replaceAll("{{storagePath}}", panel.webview.asWebviewUri(this.context.storageUri));
+            html = html.replaceAll("{{extensionPath}}", panel.webview.asWebviewUri(extensionURI));
+            html = html.replaceAll("{{storagePath}}", panel.webview.asWebviewUri(storageURI));
             panel.webview.html = html;
 
             let imageUri = panel.webview.asWebviewUri(
                 vscode.Uri.file(
-                    path.join(this.context.storageUri.fsPath, outputFileName)
+                    path.join(storageURI.fsPath, outputFileName)
                 )
             );
             panel.webview.postMessage({ image: imageUri.toString() });

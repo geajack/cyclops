@@ -21,7 +21,7 @@ function activate(context)
         )
     );
         
-    const imageViewer = new impl.ImageViewer(context);
+    const imageViewer = new impl.ImageViewer(context.storageUri, context.extensionUri);
             
     const stackFrameProvider = new impl.StackFrameTreeProvider(imageViewer);
 
