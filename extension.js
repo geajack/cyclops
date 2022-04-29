@@ -13,13 +13,13 @@ function activate(context)
 {
     let stackFrameID = null;
 
-    const viewManager = new impl.ViewManager();
+    const expressionManager = new impl.ExpressionManager();
     
-    const viewTreeProvider = new impl.ViewTreeProvider(viewManager);
+    const expressionTreeProvider = new impl.ExpressionTreeProvider(expressionManager);
     context.subscriptions.push(
         vscode.window.registerTreeDataProvider(
-            "views",
-            viewTreeProvider
+            "expressions",
+            expressionTreeProvider
         )
     );
         
@@ -99,17 +99,17 @@ function activate(context)
             constants.VIEW_IMAGE_COMMAND_ID,
             async function(pythonCode)
             {
-                let viewID = viewManager.addView(pythonCode);
-                viewTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+                let viewID = expressionManager.addView(pythonCode);
+                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
 
                 let panel = await imageViewer.view(pythonCode, stackFrameID);
                 if (panel !== null)
                 {
-                    viewManager.setPanelForView(panel, viewID);
+                    expressionManager.setPanelForView(panel, viewID);
 
                     panel.onDidDispose(
                         () => {
-                            viewManager.unsetPanelForView(viewID);
+                            expressionManager.unsetPanelForView(viewID);
                         },
                         null,
                         context.subscriptions

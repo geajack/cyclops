@@ -25,10 +25,10 @@
         "views": {
             "computerVision": [
                 {
-                    "id": "views",
-                    "name": "Views",
+                    "id": "expressions",
+                    "name": "Image Expressions",
                     "visibility": "collapsed",
-                    "contextualTitle": "Open views"
+                    "contextualTitle": "Image Expressions"
                 },
                 {
                     "id": "stackFrames",

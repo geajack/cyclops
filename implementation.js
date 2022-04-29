@@ -78,17 +78,17 @@ class ImageViewer
     }
 }
 
-class ViewManager
+class ExpressionManager
 {
     constructor()
     {
-        this.views = [];
+        this.expressions = [];
         this.currentViewID = 0;
     }
 
     addView(expression)
     {
-        this.views.push(
+        this.expressions.push(
             {
                 label: expression,
                 expression: expression,
@@ -106,17 +106,17 @@ class ViewManager
     {
     }    
 
-    getViews()
+    getExpressions()
     {
-        return this.views;
+        return this.expressions;
     }
 }
 
-class ViewTreeProvider
+class ExpressionTreeProvider
 {
-    constructor(viewManager)
+    constructor(expressionManager)
     {
-        this.viewManager = viewManager;
+        this.expressionManager = expressionManager;
         this.onDidChangeTreeDataEventEmitter = new vscode.EventEmitter();
         this.onDidChangeTreeData = this.onDidChangeTreeDataEventEmitter.event;
     }
@@ -131,7 +131,7 @@ class ViewTreeProvider
         if (!element)
         {
             let items = [];
-            for (let info of this.viewManager.getViews())
+            for (let info of this.expressionManager.getExpressions())
             {
                 let item = {};
                 item.label = info.label;
@@ -223,8 +223,8 @@ function provideCodeActions(document, selectionRange)
 
 module.exports = {
     ImageViewer,
-    ViewTreeProvider,
+    ExpressionTreeProvider,
     StackFrameTreeProvider,
-    ViewManager,
+    ExpressionManager,
     provideCodeActions
 };
