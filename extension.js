@@ -109,13 +109,6 @@ function activate(context)
             }
         )
     );
-
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            constants.CLOSE_VIEW_COMMAND_ID,
-            viewTreeProvider.onUserRequestedClosePanel.bind(viewTreeProvider)
-        )
-    );
 }
 
 function deactivate() { }

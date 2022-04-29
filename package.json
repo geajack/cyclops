@@ -13,18 +13,6 @@
         "onStartupFinished"
     ],
     "contributes": {
-        "commands": [
-            {
-                "command": "computerVision.closeView",
-                "category": "CV",
-                "title": "Close"
-            },
-            {
-                "command": "computerVision.switchStackFrame",
-                "category": "CV",
-                "title": "Use"
-            }
-        ],
         "viewsContainers": {
             "activitybar": [
                 {
@@ -47,20 +35,6 @@
                     "name": "Stack Frames",
                     "visibility": "visible",
                     "contextualTitle": "Active stack frames"
-                }
-            ]
-        },
-        "menus": {
-            "view/item/context": [
-                {
-                    "command": "computerVision.closeView",
-                    "when": "view == views"
-                }
-            ],
-            "commandPalette": [
-                {
-                    "command": "computerVision.closeView",
-                    "when": "false"
                 }
             ]
         }

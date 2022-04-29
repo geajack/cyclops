@@ -112,17 +112,6 @@ class ViewTreeProvider
         this.onDidChangeTreeDataEventEmitter.fire();
     }
 
-    onUserRequestedClosePanel(panelInfo)
-    {
-        for (let panel of this.openPanels)
-        {
-            if (panel.id === panelInfo.id)
-            {
-                panel.panel.dispose();
-            }
-        }
-    }
-
     getTreeItem(element)
     {
         return element;
