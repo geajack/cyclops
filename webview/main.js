@@ -43,8 +43,12 @@ class App
             break;
         }
 
-        let xScale = width / this.image.width;
-        let yScale = height / this.image.height;
+        let gutterSize = 40;
+        let availableWidth = width - 2 * gutterSize;
+        let availableHeight = height - 2 * gutterSize;
+
+        let xScale = availableWidth / this.image.width;
+        let yScale = availableHeight / this.image.height;
         let scale = Math.min(xScale, yScale);
         if (scale > 1)
         {
@@ -53,8 +57,8 @@ class App
 
         let imageW = scale * this.image.width;
         let imageH = scale * this.image.height;
-        let imageX = Math.floor((width - imageW) / 2);
-        let imageY = Math.floor((height - imageH) / 2);
+        let imageX = gutterSize + Math.floor((availableWidth - imageW) / 2);
+        let imageY = gutterSize + Math.floor((availableHeight - imageH) / 2);
 
         this.renderer.clearRect(0, 0, width, height);
 
