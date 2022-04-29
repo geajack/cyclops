@@ -49,12 +49,11 @@ function activate(context)
         }
     };
 
-    context.subscriptions.push(
-        vscode.window.registerTreeDataProvider(
-            "stackFrames",
-            stackFrameProvider
-        )
+    let stackFrameTree = vscode.window.createTreeView(
+        "stackFrames",
+        { treeDataProvider: stackFrameProvider }
     );
+    stackFrameTree.onDidChangeSelection(e => console.log(e.selection));
 
     let storagePath = context.storageUri.fsPath;
     fs.mkdirSync(storagePath, { recursive: true });
