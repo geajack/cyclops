@@ -64,6 +64,16 @@
                     "group": "inline",                    
                     "when": "view == expressions"
                 }
+            ],
+            "commandPalette": [
+                {
+                    "command": "computerVision.removeExpression",
+                    "when": "false"
+                },
+                {
+                    "command": "computerVision.openView",
+                    "when": "false"
+                }
             ]
         }
     }

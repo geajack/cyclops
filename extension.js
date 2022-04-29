@@ -97,28 +97,10 @@ function activate(context)
     context.subscriptions.push(
         vscode.commands.registerCommand(
             constants.VIEW_IMAGE_COMMAND_ID,
-            async function(pythonCode)
+            function(pythonCode)
             {
-                let viewID = expressionManager.addView(pythonCode);
-                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
-
-                let panel = await imageViewer.view(pythonCode, stackFrameID);
-                if (panel !== null)
-                {
-                    expressionManager.setPanelForView(panel, viewID);
-
-                    panel.onDidDispose(
-                        () => {
-                            expressionManager.unsetPanelForView(viewID);
-                        },
-                        null,
-                        context.subscriptions
-                    );
-                }
-                else
-                {
-                    vscode.window.showErrorMessage("Expression could not be saved as image!");
-                }
+                let expressionID = expressionManager.addExpression(pythonCode);
+                openView(pythonCode, expressionID);
             }
         )
     );
@@ -128,7 +110,10 @@ function activate(context)
             "computerVision.removeExpression",
             function(expressionInfo)
             {
-                let { expression, id } = expressionInfo;
+                let { id } = expressionInfo;
+
+                expressionManager.removeExpression(id);
+                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
             }
         )
     );
@@ -138,10 +123,44 @@ function activate(context)
             "computerVision.openView",
             function(expressionInfo)
             {
-                let { expression, id } = expressionInfo;
+                let { id } = expressionInfo;
+                let expression = expressionManager.getExpression(id).expression;
+
+                let panel = expressionManager.getPanelForView(id);
+                if (panel === null)
+                {
+                    openView(expression, id);
+                }
+                else
+                {
+                    panel.reveal();
+                }
             }
         )
     );
+
+    async function openView(pythonCode, expressionID)
+    {        
+        expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+
+        let panel = await imageViewer.view(pythonCode, stackFrameID);
+        if (panel !== null)
+        {
+            expressionManager.setPanelForView(panel, expressionID);
+
+            panel.onDidDispose(
+                () => {
+                    expressionManager.unsetPanelForView(expressionID);
+                },
+                null,
+                context.subscriptions
+            );
+        }
+        else
+        {
+            vscode.window.showErrorMessage("Expression could not be saved as image!");
+        }
+    }
 }
 
 function deactivate() { }

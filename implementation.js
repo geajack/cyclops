@@ -82,33 +82,51 @@ class ExpressionManager
 {
     constructor()
     {
-        this.expressions = [{label:"hello", id: 0}];
-        this.currentViewID = 0;
+        this.expressions = {};
+        this.currentID = 0;
     }
 
-    addView(expression)
+    addExpression(expression)
     {
-        this.expressions.push(
-            {
-                label: expression,
-                expression: expression,
-                id: this.currentViewID
-            }
-        );
-        this.currentViewID++;
+        let expressionID = this.currentID;
+        this.expressions[expressionID] = {
+            label: expression,
+            expression: expression,
+            id: expressionID,
+            panel: null
+        };
+        this.currentID++;
+        return expressionID;
     }
 
-    setPanelForView(panel, viewID)
+    removeExpression(expressionID)
     {
+        delete this.expressions[expressionID];
     }
 
-    unsetPanelForView(viewID)
+    getPanelForView(expressionID)
     {
-    }    
+        return this.expressions[expressionID].panel;
+    }
+
+    setPanelForView(panel, expressionID)
+    {
+        this.expressions[expressionID].panel = panel;
+    }
+
+    unsetPanelForView(expressionID)
+    {
+        this.expressions[expressionID].panel = null;
+    }
+
+    getExpression(expressionID)
+    {
+        return this.expressions[expressionID];
+    }
 
     getExpressions()
     {
-        return this.expressions;
+        return Object.values(this.expressions);
     }
 }
 
