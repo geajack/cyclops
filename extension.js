@@ -68,6 +68,15 @@ function activate(context)
                     stackFrameID = topFrame.id;
                     stackFrameProvider.stackFrameID = topFrame.id;
                     stackFrameProvider.setStack(frames.stackFrames);
+
+                    for (let expression of expressionManager.getExpressions())
+                    {
+                        let expressionID = expression.id;
+                        for (let annotationID of Object.keys(expression.annotations))
+                        {
+                            renderAnnotation(expressionID, annotationID);
+                        }
+                    }
                 }
                 else if (message.event === "terminated")
                 {
