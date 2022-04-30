@@ -94,7 +94,7 @@ class ExpressionManager
             expression: expression,
             id: expressionID,
             panel: null,
-            annotations: []
+            annotations: {}
         };
         this.currentID++;
         return expressionID;
@@ -106,24 +106,27 @@ class ExpressionManager
             label: "Point",
             id: this.currentID,
             expressionID: expressionID,
-            parameters: [
-                {
-                    label: "x", expression: ""
+            parameters: {
+                x: {
+                    label: "x", name: "x", expression: "", annotationID: this.currentID, expressionID: expressionID
                 },
-                {
-                    label: "y", expression: ""
+                y: {
+                    label: "y", name: "y", expression: "", annotationID: this.currentID, expressionID: expressionID
                 }
-            ]
+            }            
         };
-        this.expressions[expressionID].annotations.push(annotation);
+        this.expressions[expressionID].annotations[this.currentID] = annotation;
         this.currentID++;
+    }
+
+    setParameter(expressionID, annotationID, name, value)
+    {
+        this.expressions[expressionID].annotations[annotationID].parameters[name].expression = value;
     }
 
     removeAnnotation(expressionID, annotationID)
     {
-        this.expressions[expressionID].annotations = this.expressions[expressionID].annotations.filter(
-            annotation => annotation.id !== annotationID
-        );
+        delete this.expressions[expressionID].annotations[annotationID];
     }
 
     removeExpression(expressionID)
@@ -184,7 +187,7 @@ class ExpressionTreeProvider
                 item.contextValue = "expression";
 
                 item.children = [];
-                for (let annotation of expression.annotations)
+                for (let annotation of Object.values(expression.annotations))
                 {
                     let childItem = Object.create(annotation);
                     childItem.label = annotation.label;
@@ -192,7 +195,7 @@ class ExpressionTreeProvider
                     childItem.contextValue = "annotation";
                     childItem.children = [];
 
-                    for (let parameter of annotation.parameters)
+                    for (let parameter of Object.values(annotation.parameters))
                     {
                         let grandChildItem = Object.create(parameter);
                         grandChildItem.label = parameter.label;

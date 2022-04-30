@@ -14,14 +14,23 @@ function activate(context)
     let stackFrameID = null;
 
     const expressionManager = new impl.ExpressionManager();
-    
     const expressionTreeProvider = new impl.ExpressionTreeProvider(expressionManager);
-    context.subscriptions.push(
-        vscode.window.registerTreeDataProvider(
-            "expressions",
-            expressionTreeProvider
-        )
+    const expressionTree = vscode.window.createTreeView(
+        "expressions",
+        { treeDataProvider: expressionTreeProvider }
     );
+    expressionTree.onDidChangeSelection(event => {
+        if (event.selection.length > 0)
+        {
+            let item = event.selection[0];
+            if (item.contextValue === "parameter")
+            {
+                let { expressionID, annotationID, name } = item;
+                expressionManager.setParameter(expressionID, annotationID, name, "Hello");
+                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+            }
+        }
+    });
         
     const imageViewer = new impl.ImageViewer(context.storageUri, context.extensionUri);
             
