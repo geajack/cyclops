@@ -141,12 +141,16 @@ function activate(context)
     context.subscriptions.push(
         vscode.commands.registerCommand(
             "computerVision.removeExpression",
-            function(expressionInfo)
+            async function(expressionInfo)
             {
-                let { id } = expressionInfo;
+                let response = await vscode.window.showInformationMessage("Are you sure you want to remove this annotation?", "Yes", "No");
 
-                expressionManager.removeExpression(id);
-                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+                if (response === "Yes")
+                {
+                    let { id } = expressionInfo;
+                    expressionManager.removeExpression(id);
+                    expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+                }
             }
         )
     );
@@ -202,7 +206,7 @@ function activate(context)
     context.subscriptions.push(
         vscode.commands.registerCommand(
             "computerVision.removeAnnotation",
-            function(item)
+            async function(item)
             {
                 expressionManager.removeAnnotation(item.expressionID, item.id);
                 expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
