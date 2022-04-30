@@ -210,6 +210,16 @@ function activate(context)
             {
                 expressionManager.removeAnnotation(item.expressionID, item.id);
                 expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+
+                let expression = expressionManager.getExpression(item.expressionID);
+                if (expression.panel)
+                {
+                    let message = {
+                        type: "removeAnnotation",
+                        id: item.id
+                    };
+                    expression.panel.webview.postMessage(message);
+                }
             }
         )
     );

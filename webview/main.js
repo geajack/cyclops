@@ -21,6 +21,11 @@ class App
         this.annotations[id] = annotation;
     }
 
+    removeAnnotation(id)
+    {
+        delete this.annotations[id];
+    }
+
     render(event)
     {
         if (!this.started) {
@@ -248,6 +253,11 @@ async function onMessage(event)
 
         let annotation = new PointAnnotation(message.annotation);
         app.setAnnotation(message.annotation.id, annotation);
+        app.render(EVENT_NONE);
+    }
+    else if (message.type === "removeAnnotation")
+    {
+        app.removeAnnotation(message.id);
         app.render(EVENT_NONE);
     }
 }
