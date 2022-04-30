@@ -29,13 +29,11 @@ class ImageViewer
         {
             return;
         }
-        let response;
-        response = await session.customRequest("stackTrace", { threadId: 1 })
 
         let outputFileName = getImageName() + ".png";
         let outputFilePath = path.join(storageURI.fsPath, outputFileName);
 
-        response = await session.customRequest("evaluate",
+        let response = await session.customRequest("evaluate",
             {
                 expression: `cv2.imwrite(r"${outputFilePath}", (${pythonCode}))`,
                 frameId: stackFrameID
@@ -108,10 +106,10 @@ class ExpressionManager
             expressionID: expressionID,
             parameters: {
                 x: {
-                    label: "x", name: "x", expression: "", annotationID: this.currentID, expressionID: expressionID
+                    label: "x", name: "x", expression: null, annotationID: this.currentID, expressionID: expressionID
                 },
                 y: {
-                    label: "y", name: "y", expression: "", annotationID: this.currentID, expressionID: expressionID
+                    label: "y", name: "y", expression: null, annotationID: this.currentID, expressionID: expressionID
                 }
             }            
         };

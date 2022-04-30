@@ -39,6 +39,38 @@ function activate(context)
                     {
                         expressionManager.setParameter(expressionID, annotationID, name, value);
                         expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+
+                        let expression = expressionManager.getExpression(expressionID);
+                        if (expression.panel)
+                        {
+                            let annotation = expression.annotations[annotationID];
+                            let parameters = Object.values(annotation.parameters);
+
+                            let isReady = parameters.every(p => p.expression !== null);
+
+                            let message = {}
+
+                            if (isReady)
+                            {
+                                for (let parameter of parameters)
+                                {
+                                    const session = vscode.debug.activeDebugSession;
+                                    let response = await session.customRequest("evaluate",
+                                        {
+                                            expression: parameter.expression,
+                                            frameId: stackFrameID
+                                        }
+                                    );
+
+                                    if (response.type == "int" || response.type == "float")
+                                    {
+                                        message[parameter.name] = Number.parseFloat(response.result);
+                                    }
+                                }
+
+                                console.log(message);
+                            }
+                        }
                     }
                 }
             }
