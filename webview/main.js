@@ -4,6 +4,7 @@ class App
     {
         this.started = false;
         this.renderer = renderer;
+        this.annotations = {};
     }
 
     start(image)
@@ -15,6 +16,11 @@ class App
         this.render({ type: "start" });
     }
 
+    setAnnotation(id, annotation)
+    {
+        this.annotations[id] = annotation;
+    }
+
     render(event)
     {
         if (!this.started) {
@@ -23,8 +29,6 @@ class App
 
         let width  = this.renderer.canvas.clientWidth;
         let height = this.renderer.canvas.clientHeight;
-
-        let displayContextMenu = false;
 
         switch (event.type)
         {
@@ -69,6 +73,11 @@ class App
             imageW,
             imageH
         );
+
+        for (let annotation of Object.values(this.annotations))
+        {
+            annotation.render(this.renderer, imageX, imageY, scale);
+        }
 
         this.mouseX = Math.floor(this.mouseX) + 0.5;
         this.mouseY = Math.floor(this.mouseY) + 0.5;
@@ -201,12 +210,49 @@ class ContextMenu
 
 async function onMessage(event)
 {
-    let imageUri = event.data.image;
+    const message = event.data;
 
-    let image = new Image();
-    image.src = imageUri;
-    image.addEventListener("load", () => app.start(image));
+    if (message.type === "image")
+    {
+        let imageUri = message.image;
+        let image = new Image();
+        image.src = imageUri;
+        image.addEventListener("load", () => app.start(image));
+    }
+    else if (message.type === "annotation")
+    {
+        class PointAnnotation
+        {
+            constructor(parameters)
+            {
+                let { x, y } = parameters;
+                this.x = x;
+                this.y = y;
+            }
+
+            render(context, x0, y0, scaling)
+            {
+                let x = x0 + this.x * scaling;
+                let y = y0 + this.y * scaling;
+
+                context.beginPath();
+                context.setLineDash([]);
+                context.strokeStyle = "red";
+                context.moveTo(x - 5, y);
+                context.lineTo(x + 5, y);
+                context.moveTo(x, y - 5);
+                context.lineTo(x, y + 5);
+                context.stroke();
+            }
+        }
+
+        let annotation = new PointAnnotation(message.annotation);
+        app.setAnnotation(message.annotation.id, annotation);
+        app.render(EVENT_NONE);
+    }
 }
+
+const EVENT_NONE = { type: "none" };
 
 let canvas = document.querySelector("canvas");
 

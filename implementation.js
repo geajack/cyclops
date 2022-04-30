@@ -65,7 +65,7 @@ class ImageViewer
                     path.join(storageURI.fsPath, outputFileName)
                 )
             );
-            panel.webview.postMessage({ image: imageUri.toString() });
+            panel.webview.postMessage({ type: "image", image: imageUri.toString() });
 
             return panel;
         }

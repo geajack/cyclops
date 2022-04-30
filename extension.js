@@ -221,8 +221,11 @@ function activate(context)
             let isReady = parameters.every(p => p.expression !== null);
 
             let message = {
-                id: annotation.id,
-                type: annotation.type
+                type: "annotation",
+                annotation: {
+                    id: annotation.id,
+                    type: annotation.type
+                }
             };
 
             if (isReady)
@@ -239,11 +242,11 @@ function activate(context)
 
                     if (response.type == "int" || response.type == "float")
                     {
-                        message[parameter.name] = Number.parseFloat(response.result);
+                        message.annotation[parameter.name] = Number.parseFloat(response.result);
                     }
                 }
 
-                console.log(message);
+                expression.panel.webview.postMessage(message);
             }
         }
     }
