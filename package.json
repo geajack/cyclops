@@ -57,6 +57,10 @@
                 {
                     "command": "computerVision.addRectangle",
                     "when": "view == expressions && viewItem == expression"
+                },
+                {
+                    "command": "computerVision.removeAnnotation",
+                    "when": "view == expressions && viewItem == annotation"
                 }
             ]
         },
@@ -85,6 +89,13 @@
                 "command": "computerVision.addRectangle",
                 "category": "CV",
                 "title": "Add rectangle annotation",
+                "enablement": "view == expressions"
+            },
+            {
+                "command": "computerVision.removeAnnotation",
+                "category": "CV",
+                "title": "Remove annotation",
+                "icon": "$(trash)",
                 "enablement": "view == expressions"
             }
         ]

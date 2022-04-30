@@ -160,6 +160,17 @@ function activate(context)
         )
     );
 
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "computerVision.removeAnnotation",
+            function(item)
+            {
+                expressionManager.removeAnnotation(item.expressionID, item.id);
+                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+            }
+        )
+    );
+
     async function openView(pythonCode, expressionID)
     {        
         expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();

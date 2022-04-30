@@ -104,6 +104,8 @@ class ExpressionManager
     {
         let annotation = {
             label: "Point",
+            id: this.currentID,
+            expressionID: expressionID,
             parameters: [
                 {
                     label: "x", expression: ""
@@ -114,6 +116,14 @@ class ExpressionManager
             ]
         };
         this.expressions[expressionID].annotations.push(annotation);
+        this.currentID++;
+    }
+
+    removeAnnotation(expressionID, annotationID)
+    {
+        this.expressions[expressionID].annotations = this.expressions[expressionID].annotations.filter(
+            annotation => annotation.id !== annotationID
+        );
     }
 
     removeExpression(expressionID)
@@ -168,7 +178,7 @@ class ExpressionTreeProvider
             let items = [];
             for (let expression of this.expressionManager.getExpressions())
             {
-                let item = {};
+                let item = Object.create(expression);
                 item.label = expression.label;
                 item.id = expression.id;
                 item.contextValue = "expression";
@@ -176,7 +186,7 @@ class ExpressionTreeProvider
                 item.children = [];
                 for (let annotation of expression.annotations)
                 {
-                    let childItem = {};
+                    let childItem = Object.create(annotation);
                     childItem.label = annotation.label;
                     childItem.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
                     childItem.contextValue = "annotation";
@@ -184,7 +194,7 @@ class ExpressionTreeProvider
 
                     for (let parameter of annotation.parameters)
                     {
-                        let grandChildItem = {};
+                        let grandChildItem = Object.create(parameter);
                         grandChildItem.label = parameter.label;
                         grandChildItem.description = parameter.expression;
                         grandChildItem.contextValue = "parameter";
