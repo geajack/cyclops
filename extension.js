@@ -19,18 +19,31 @@ function activate(context)
         "expressions",
         { treeDataProvider: expressionTreeProvider }
     );
-    expressionTree.onDidChangeSelection(event => {
-        if (event.selection.length > 0)
+    expressionTree.onDidChangeSelection(
+        async function(event)
         {
-            let item = event.selection[0];
-            if (item.contextValue === "parameter")
+            if (event.selection.length > 0)
             {
-                let { expressionID, annotationID, name } = item;
-                expressionManager.setParameter(expressionID, annotationID, name, "Hello");
-                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+                let item = event.selection[0];
+                if (item.contextValue === "parameter")
+                {
+                    let { expressionID, annotationID, name } = item;
+
+                    let value = await vscode.window.showInputBox(
+                        {
+                            prompt: "Enter value for " + item.label
+                        }
+                    );
+
+                    if (value !== undefined)
+                    {
+                        expressionManager.setParameter(expressionID, annotationID, name, value);
+                        expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+                    }
+                }
             }
         }
-    });
+    );
         
     const imageViewer = new impl.ImageViewer(context.storageUri, context.extensionUri);
             
