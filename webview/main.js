@@ -1,3 +1,55 @@
+const annotationClasses = {
+    point: class PointAnnotation
+    {
+        constructor(parameters)
+        {
+            let { x, y } = parameters;
+            this.x = x;
+            this.y = y;
+        }
+
+        render(context, x0, y0, scaling)
+        {
+            let x = x0 + this.x * scaling;
+            let y = y0 + this.y * scaling;
+
+            context.beginPath();
+            context.setLineDash([]);
+            context.strokeStyle = "red";
+            context.moveTo(x - 5, y);
+            context.lineTo(x + 5, y);
+            context.moveTo(x, y - 5);
+            context.lineTo(x, y + 5);
+            context.stroke();
+        }
+    },
+    rectangle: class RectangleAnnotation
+    {
+        constructor(parameters)
+        {
+            let { x1, y1, x2, y2 } = parameters;
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+        }
+
+        render(context, x0, y0, scaling)
+        {
+            let x = x0 + this.x1 * scaling;
+            let y = y0 + this.y1 * scaling;
+            let w = (this.x2 - this.x1) * scaling;
+            let h = (this.y2 - this.y1) * scaling;
+
+            context.beginPath();
+            context.setLineDash([]);
+            context.strokeStyle = "red";
+            context.rect(x, y, w, h);
+            context.stroke();
+        }
+    }
+}
+
 class App
 {
     constructor(renderer)
@@ -226,32 +278,8 @@ async function onMessage(event)
     }
     else if (message.type === "annotation")
     {
-        class PointAnnotation
-        {
-            constructor(parameters)
-            {
-                let { x, y } = parameters;
-                this.x = x;
-                this.y = y;
-            }
-
-            render(context, x0, y0, scaling)
-            {
-                let x = x0 + this.x * scaling;
-                let y = y0 + this.y * scaling;
-
-                context.beginPath();
-                context.setLineDash([]);
-                context.strokeStyle = "red";
-                context.moveTo(x - 5, y);
-                context.lineTo(x + 5, y);
-                context.moveTo(x, y - 5);
-                context.lineTo(x, y + 5);
-                context.stroke();
-            }
-        }
-
-        let annotation = new PointAnnotation(message.annotation);
+        let annotationClass = annotationClasses[message.annotation.type];
+        let annotation = new annotationClass(message.annotation);
         app.setAnnotation(message.annotation.id, annotation);
         app.render(EVENT_NONE);
     }

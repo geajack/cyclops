@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const impl = require("./implementation.js")
 const constants = require("./constants.js")
+const annotationTypes = require("./annotations.js")
 const path = require("path");
 const fs = require("fs")
 
@@ -112,7 +113,6 @@ function activate(context)
         );
     }
 
-
     vscode.debug.registerDebugAdapterTrackerFactory("python", { createDebugAdapterTracker: () => debuggerTracker });
 
     context.subscriptions.push(
@@ -182,26 +182,19 @@ function activate(context)
         )
     );
 
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            "computerVision.addPoint",
-            async function(item)
-            {
-                expressionManager.addPointAnnotation(item.id);
-                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
-            }
-        )
-    );
-
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            "computerVision.addRectangle",
-            function(item)
-            {
-                console.log(item);
-            }
-        )
-    );
+    for (let annotationType of annotationTypes.annotationTypes)
+    {
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                annotationType.command,
+                async function(item)
+                {
+                    expressionManager.addAnnotation(item.id, annotationType);
+                    expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+                }
+            )
+        );
+    }
 
     context.subscriptions.push(
         vscode.commands.registerCommand(

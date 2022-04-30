@@ -98,22 +98,27 @@ class ExpressionManager
         return expressionID;
     }
 
-    addPointAnnotation(expressionID)
+    addAnnotation(expressionID, annotationType)
     {
         let annotation = {
-            label: "Point",
+            label: annotationType.label,
             id: this.currentID,
             expressionID: expressionID,
-            type: "point",
-            parameters: {
-                x: {
-                    label: "x", name: "x", expression: null, annotationID: this.currentID, expressionID: expressionID
-                },
-                y: {
-                    label: "y", name: "y", expression: null, annotationID: this.currentID, expressionID: expressionID
-                }
-            }            
+            type: annotationType.name,
+            parameters: {}
         };
+
+        for (let parameter of annotationType.parameters)
+        {
+            annotation.parameters[parameter.name] = {
+                label: parameter.label,
+                name: parameter.name,
+                expression: null,
+                annotationID: this.currentID,
+                expressionID: expressionID
+            };
+        }
+
         this.expressions[expressionID].annotations[this.currentID] = annotation;
         this.currentID++;
     }
