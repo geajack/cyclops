@@ -143,7 +143,7 @@ function activate(context)
             "computerVision.removeExpression",
             async function(expressionInfo)
             {
-                let response = await vscode.window.showInformationMessage("Are you sure you want to remove this annotation?", "Yes", "No");
+                let response = await vscode.window.showInformationMessage("Are you sure you want to remove this expression?", "Yes", "No");
 
                 if (response === "Yes")
                 {
