@@ -40,40 +40,7 @@ function activate(context)
                         expressionManager.setParameter(expressionID, annotationID, name, value);
                         expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
 
-                        let expression = expressionManager.getExpression(expressionID);
-                        if (expression.panel)
-                        {
-                            let annotation = expression.annotations[annotationID];
-                            let parameters = Object.values(annotation.parameters);
-
-                            let isReady = parameters.every(p => p.expression !== null);
-
-                            let message = {
-                                id: annotation.id,
-                                type: annotation.type
-                            };
-
-                            if (isReady)
-                            {
-                                for (let parameter of parameters)
-                                {
-                                    const session = vscode.debug.activeDebugSession;
-                                    let response = await session.customRequest("evaluate",
-                                        {
-                                            expression: parameter.expression,
-                                            frameId: stackFrameID
-                                        }
-                                    );
-
-                                    if (response.type == "int" || response.type == "float")
-                                    {
-                                        message[parameter.name] = Number.parseFloat(response.result);
-                                    }
-                                }
-
-                                console.log(message);
-                            }
-                        }
+                        renderAnnotation(expressionID, annotationID);
                     }
                 }
             }
@@ -178,15 +145,21 @@ function activate(context)
     context.subscriptions.push(
         vscode.commands.registerCommand(
             "computerVision.openView",
-            function(expressionInfo)
+            async function(expressionInfo)
             {
-                let { id } = expressionInfo;
-                let expression = expressionManager.getExpression(id).expression;
+                let expressionID = expressionInfo.id;
+                let expression = expressionManager.getExpression(expressionID);
+                let pythonCode = expression.expression;
 
-                let panel = expressionManager.getPanelForView(id);
+                let panel = expressionManager.getPanelForView(expressionID);
                 if (panel === null)
                 {
-                    openView(expression, id);
+                    await openView(pythonCode, expressionID);
+
+                    for (let annotation of Object.values(expression.annotations))
+                    {
+                        renderAnnotation(expressionID, annotation.id);
+                    }
                 }
                 else
                 {
@@ -227,6 +200,44 @@ function activate(context)
             }
         )
     );
+
+    async function renderAnnotation(expressionID, annotationID)
+    {
+        let expression = expressionManager.getExpression(expressionID);
+        if (expression.panel)
+        {
+            let annotation = expression.annotations[annotationID];
+            let parameters = Object.values(annotation.parameters);
+
+            let isReady = parameters.every(p => p.expression !== null);
+
+            let message = {
+                id: annotation.id,
+                type: annotation.type
+            };
+
+            if (isReady)
+            {
+                for (let parameter of parameters)
+                {
+                    const session = vscode.debug.activeDebugSession;
+                    let response = await session.customRequest("evaluate",
+                        {
+                            expression: parameter.expression,
+                            frameId: stackFrameID
+                        }
+                    );
+
+                    if (response.type == "int" || response.type == "float")
+                    {
+                        message[parameter.name] = Number.parseFloat(response.result);
+                    }
+                }
+
+                console.log(message);
+            }
+        }
+    }
 
     async function openView(pythonCode, expressionID)
     {        
