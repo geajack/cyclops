@@ -48,7 +48,10 @@ function activate(context)
 
                             let isReady = parameters.every(p => p.expression !== null);
 
-                            let message = {}
+                            let message = {
+                                id: annotation.id,
+                                type: annotation.type
+                            };
 
                             if (isReady)
                             {

@@ -104,6 +104,7 @@ class ExpressionManager
             label: "Point",
             id: this.currentID,
             expressionID: expressionID,
+            type: "point",
             parameters: {
                 x: {
                     label: "x", name: "x", expression: null, annotationID: this.currentID, expressionID: expressionID
