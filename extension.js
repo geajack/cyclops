@@ -139,6 +139,27 @@ function activate(context)
         )
     );
 
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "computerVision.addPoint",
+            async function(item)
+            {
+                expressionManager.addPointAnnotation(item.id);
+                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+            }
+        )
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "computerVision.addRectangle",
+            function(item)
+            {
+                console.log(item);
+            }
+        )
+    );
+
     async function openView(pythonCode, expressionID)
     {        
         expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();

@@ -13,20 +13,6 @@
         "onStartupFinished"
     ],
     "contributes": {
-        "commands": [
-            {
-                "command": "computerVision.removeExpression",
-                "category": "CV",
-                "title": "Remove",
-                "icon": "resources/font-awesome/trash-can.svg"
-            },
-            {
-                "command": "computerVision.openView",
-                "category": "CV",
-                "title": "Open View",
-                "icon": "resources/font-awesome/window-restore.svg"
-            }
-        ],
         "viewsContainers": {
             "activitybar": [
                 {
@@ -57,24 +43,50 @@
                 {
                     "command": "computerVision.removeExpression",
                     "group": "inline",
-                    "when": "view == expressions"
+                    "when": "view == expressions && viewItem == expression"
                 },
                 {
                     "command": "computerVision.openView",
                     "group": "inline",                    
-                    "when": "view == expressions"
-                }
-            ],
-            "commandPalette": [
-                {
-                    "command": "computerVision.removeExpression",
-                    "when": "false"
+                    "when": "view == expressions && viewItem == expression"
                 },
                 {
-                    "command": "computerVision.openView",
-                    "when": "false"
+                    "command": "computerVision.addPoint",
+                    "when": "view == expressions && viewItem == expression"
+                },
+                {
+                    "command": "computerVision.addRectangle",
+                    "when": "view == expressions && viewItem == expression"
                 }
             ]
-        }
+        },
+        "commands": [
+            {
+                "command": "computerVision.removeExpression",
+                "category": "CV",
+                "title": "Remove",
+                "icon": "$(trash)",
+                "enablement": "view == expressions"
+            },
+            {
+                "command": "computerVision.openView",
+                "category": "CV",
+                "title": "Open View",
+                "icon": "$(window)",
+                "enablement": "view == expressions"
+            },
+            {
+                "command": "computerVision.addPoint",
+                "category": "CV",
+                "title": "Add point annotation",
+                "enablement": "view == expressions"
+            },
+            {
+                "command": "computerVision.addRectangle",
+                "category": "CV",
+                "title": "Add rectangle annotation",
+                "enablement": "view == expressions"
+            }
+        ]
     }
 }

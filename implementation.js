@@ -93,10 +93,27 @@ class ExpressionManager
             label: expression,
             expression: expression,
             id: expressionID,
-            panel: null
+            panel: null,
+            annotations: []
         };
         this.currentID++;
         return expressionID;
+    }
+
+    addPointAnnotation(expressionID)
+    {
+        let annotation = {
+            label: "Point",
+            parameters: [
+                {
+                    label: "x", expression: ""
+                },
+                {
+                    label: "y", expression: ""
+                }
+            ]
+        };
+        this.expressions[expressionID].annotations.push(annotation);
     }
 
     removeExpression(expressionID)
@@ -149,18 +166,50 @@ class ExpressionTreeProvider
         if (!element)
         {
             let items = [];
-            for (let info of this.expressionManager.getExpressions())
+            for (let expression of this.expressionManager.getExpressions())
             {
                 let item = {};
-                item.label = info.label;
-                item.id = info.id;
-                items.push(item)
+                item.label = expression.label;
+                item.id = expression.id;
+                item.contextValue = "expression";
+
+                item.children = [];
+                for (let annotation of expression.annotations)
+                {
+                    let childItem = {};
+                    childItem.label = annotation.label;
+                    childItem.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+                    childItem.contextValue = "annotation";
+                    childItem.children = [];
+
+                    for (let parameter of annotation.parameters)
+                    {
+                        let grandChildItem = {};
+                        grandChildItem.label = parameter.label;
+                        grandChildItem.description = parameter.expression;
+                        grandChildItem.contextValue = "parameter";
+                        childItem.children.push(grandChildItem);
+                    }
+
+                    item.children.push(childItem);
+                }
+
+                if (item.children.length > 0)
+                {
+                    item.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+                }
+                else
+                {
+                    item.collapsibleState = vscode.TreeItemCollapsibleState.None;
+                }
+
+                items.push(item);
             }
             return items;
         }
         else
         {
-            return [];
+            return element.children || [];
         }
     }
 }
