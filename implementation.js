@@ -158,6 +158,12 @@ class ExpressionManager
         return this.expressions[expressionID];
     }
 
+    setExpression(expressionID, pythonCode)
+    {
+        this.expressions[expressionID].expression = pythonCode;
+        this.expressions[expressionID].label = pythonCode;
+    }
+
     getExpressions()
     {
         return Object.values(this.expressions);

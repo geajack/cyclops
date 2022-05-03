@@ -53,6 +53,11 @@
                     "when": "view == expressions && viewItem == expression"
                 },
                 {
+                    "command": "computerVision.editExpression",
+                    "group": "inline",
+                    "when": "view == expressions && viewItem == expression"
+                },
+                {
                     "command": "computerVision.openView",
                     "group": "inline",                    
                     "when": "view == expressions && viewItem == expression"
@@ -77,6 +82,13 @@
                 "category": "CV",
                 "title": "Add expression",
                 "icon": "$(plus)",
+                "enablement": "view == expressions"
+            },
+            {
+                "command": "computerVision.editExpression",
+                "category": "CV",
+                "title": "Edit expression",
+                "icon": "$(pencil)",
                 "enablement": "view == expressions"
             },
             {
