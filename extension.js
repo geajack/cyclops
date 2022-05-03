@@ -198,6 +198,22 @@ function activate(context)
 
     context.subscriptions.push(
         vscode.commands.registerCommand(
+            "computerVision.addExpression",
+            async function()
+            {
+                let pythonCode = await vscode.window.showInputBox(
+                    {
+                        prompt: "Add expression:"
+                    }
+                );
+                expressionManager.addExpression(pythonCode);
+                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+            }
+        )
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
             "computerVision.removeAnnotation",
             async function(item)
             {

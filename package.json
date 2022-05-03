@@ -39,6 +39,13 @@
             ]
         },
         "menus": {
+            "view/title": [
+                {
+                    "command": "computerVision.addExpression",
+                    "group": "navigation",
+                    "when": "view == expressions"
+                }
+            ],
             "view/item/context": [
                 {
                     "command": "computerVision.removeExpression",
@@ -65,6 +72,13 @@
             ]
         },
         "commands": [
+            {
+                "command": "computerVision.addExpression",
+                "category": "CV",
+                "title": "Add expression",
+                "icon": "$(plus)",
+                "enablement": "view == expressions"
+            },
             {
                 "command": "computerVision.removeExpression",
                 "category": "CV",
