@@ -1,8 +1,8 @@
 {
-    "name": "computervision",
-    "publisher": "Jack Millist",
+    "name": "cyclops",
+    "publisher": "Jack",
     "repository": {
-        "url": "https://github.com/geajack/vscode-computer-vision-extenstion"
+        "url": "https://github.com/geajack/cyclops"
     },
     "version": "0.0.1",
     "engines": {
