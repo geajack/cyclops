@@ -35,10 +35,12 @@ class ImageViewer
 
         let response = await session.customRequest("evaluate",
             {
-                expression: `cv2.imwrite(r"${outputFilePath}", (${pythonCode}))`,
+                expression: `exec(\"import cv2; cv2.imwrite(r\\"${outputFilePath}\\", (${pythonCode}))\")`,
                 frameId: stackFrameID
             }
         );
+
+        console.log(response);
 
         let fileWasCreated = fs.existsSync(path.join(storageURI.fsPath, outputFileName));
         if (fileWasCreated)
