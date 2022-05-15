@@ -3,6 +3,8 @@ const fs = require("fs");
 const path = require("path");
 const constants = require("./constants.js")
 
+let outputChannel = vscode.window.createOutputChannel("Cyclops");
+
 let currentImageID = 0;
 function getImageName()
 {
@@ -73,7 +75,24 @@ class ImageViewer
         }
         else
         {
-            return null;            
+            outputChannel.clear();
+
+            outputChannel.appendLine("Could not render Python expression:")
+            outputChannel.appendLine("    " + pythonCode);
+            outputChannel.appendLine("Error:")
+
+            if (response.type === "SyntaxError")
+            {
+                outputChannel.appendLine("    " + "SyntaxError");
+            }
+            else
+            {
+                outputChannel.appendLine("    " + response.result);
+            }
+
+            outputChannel.show(true);
+
+            return null;
         }
     }
 }
