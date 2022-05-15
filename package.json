@@ -78,6 +78,11 @@
                 {
                     "command": "computerVision.removeAnnotation",
                     "when": "view == expressions && viewItem == annotation"
+                },
+                {
+                    "command": "computerVision.editParameter",
+                    "group": "inline",
+                    "when": "view == expressions && viewItem == parameter"
                 }
             ]
         },
@@ -127,6 +132,13 @@
                 "category": "CV",
                 "title": "Remove annotation",
                 "icon": "$(trash)",
+                "enablement": "view == expressions"
+            },
+            {
+                "command": "computerVision.editParameter",
+                "category": "CV",
+                "title": "Edit parameter",
+                "icon": "$(pencil)",
                 "enablement": "view == expressions"
             }
         ]

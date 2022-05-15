@@ -20,12 +20,11 @@ function activate(context)
         "expressions",
         { treeDataProvider: expressionTreeProvider }
     );
-    expressionTree.onDidChangeSelection(
-        async function(event)
-        {
-            if (event.selection.length > 0)
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "computerVision.editParameter",
+            async function(item)
             {
-                let item = event.selection[0];
                 if (item.contextValue === "parameter")
                 {
                     let { expressionID, annotationID, name } = item;
@@ -46,7 +45,7 @@ function activate(context)
                     }
                 }
             }
-        }
+        )
     );
         
     const imageViewer = new impl.ImageViewer(context.storageUri, context.extensionUri);
