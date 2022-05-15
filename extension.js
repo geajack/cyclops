@@ -32,7 +32,8 @@ function activate(context)
 
                     let value = await vscode.window.showInputBox(
                         {
-                            prompt: "Enter value for " + item.label
+                            prompt: "Enter value for " + item.label,
+                            value: item.expression
                         }
                     );
 
