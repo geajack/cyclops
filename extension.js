@@ -224,8 +224,11 @@ function activate(context)
                         value: expressionInfo.expression,
                     }
                 );
-                expressionManager.setExpression(item.id, pythonCode);
-                expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+                if (pythonCode)
+                {
+                    expressionManager.setExpression(item.id, pythonCode);
+                    expressionTreeProvider.onDidChangeTreeDataEventEmitter.fire();
+                }
             }
         )
     );
