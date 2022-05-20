@@ -3,13 +3,13 @@
     "displayName": "Cyclops",
     "description": "An extension for debugging computer vision code in Python/OpenCV.",
     "categories": ["Debuggers"],
-    "icon": "icon.png",
+    "icon": "store-icon.png",
     "keywords": ["python", "opencv"],
     "publisher": "j3m",
     "repository": {
         "url": "https://github.com/geajack/cyclops"
     },
-    "version": "0.0.2",
+    "version": "0.0.4",
     "engines": {
         "vscode": "^1.32.0"
     },
