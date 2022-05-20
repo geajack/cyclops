@@ -35,9 +35,13 @@ class ImageViewer
         let outputFileName = getImageName() + ".png";
         let outputFilePath = path.join(storageURI.fsPath, outputFileName);
 
+        await session.customRequest("evaluate",
+            { expression: "exec(\"import cv2\"", frameId: stackFrameID }
+        );
+
         let response = await session.customRequest("evaluate",
             {
-                expression: `exec(\"import cv2; cv2.imwrite(r\\"${outputFilePath}\\", (${pythonCode}))\")`,
+                expression: `cv2.imwrite(r"${outputFilePath}", (${pythonCode}))`,
                 frameId: stackFrameID
             }
         );
