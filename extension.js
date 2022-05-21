@@ -1,6 +1,5 @@
 const vscode = require("vscode");
 const impl = require("./implementation.js")
-const constants = require("./constants.js")
 const annotationTypes = require("./annotations.js")
 const path = require("path");
 const fs = require("fs")
@@ -129,7 +128,7 @@ function activate(context)
 
     context.subscriptions.push(
         vscode.commands.registerCommand(
-            constants.VIEW_IMAGE_COMMAND_ID,
+            "computerVision.viewImage",
             function(pythonCode)
             {
                 let expressionID = expressionManager.addExpression(pythonCode);

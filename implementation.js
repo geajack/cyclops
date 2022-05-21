@@ -1,7 +1,6 @@
 const vscode = require("vscode");
 const fs = require("fs");
 const path = require("path");
-const constants = require("./constants.js")
 
 let outputChannel = vscode.window.createOutputChannel("Cyclops");
 
@@ -324,7 +323,7 @@ function provideCodeActions(document, selectionRange)
     {
         return [
             {
-                command: constants.VIEW_IMAGE_COMMAND_ID,
+                command: "computerVision.viewImage",
                 title: "View image",
                 arguments: [selectedString],
             }
