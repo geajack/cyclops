@@ -45,8 +45,6 @@ class ImageViewer
             }
         );
 
-        console.log(response);
-
         let fileWasCreated = fs.existsSync(path.join(storageURI.fsPath, outputFileName));
         if (fileWasCreated)
         {
