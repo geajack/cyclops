@@ -35,7 +35,7 @@ class ImageViewer
         let outputFilePath = path.join(storageURI.fsPath, outputFileName);
 
         await session.customRequest("evaluate",
-            { expression: "exec(\"import cv2\"", frameId: stackFrameID }
+            { expression: "exec(\"import cv2\")", frameId: stackFrameID }
         );
 
         let response = await session.customRequest("evaluate",
