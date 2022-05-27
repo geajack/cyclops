@@ -283,9 +283,10 @@ function activate(context)
                         }
                     );
 
-                    if (response.type == "int" || response.type == "float")
+                    let value = Number.parseFloat(response.result);
+                    if(value !== NaN)
                     {
-                        message.annotation[parameter.name] = Number.parseFloat(response.result);
+                        message.annotation[parameter.name] = value;
                     }
                 }
 
