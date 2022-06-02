@@ -9,7 +9,7 @@
     "repository": {
         "url": "https://github.com/geajack/cyclops"
     },
-    "version": "0.0.4",
+    "version": "0.0.5",
     "engines": {
         "vscode": "^1.32.0"
     },
